@@ -974,6 +974,9 @@ repeat 36 [
             <button class="btn btn-secondary" onclick="downloadSVG(true)" style="justify-content: center;">
               🎬 Download Animated .svg (CSS Motion)
             </button>
+            <button class="btn btn-secondary" onclick="downloadPNG()" style="justify-content: center;">
+              📷 Download Raster .png (High-Res)
+            </button>
             <button class="btn btn-secondary" onclick="copyASCIIArt()" style="justify-content: center;">
               📋 Copy Terminal ASCII / Braille Art
             </button>
@@ -1712,12 +1715,56 @@ repeat 36 [
       downloadFile(svgContent, animated ? 'drawing-animated.svg' : 'drawing.svg', 'image/svg+xml');
     }
 
+    function downloadPNG() {
+      const svgEl = document.getElementById('studio-svg-element');
+      if (!svgEl) return;
+      const svgData = new XMLSerializer().serializeToString(svgEl);
+      const canvas = document.createElement('canvas');
+      const box = svgEl.viewBox?.baseVal || { width: 800, height: 800 };
+      canvas.width = Math.max(box.width || 800, 800) * 2;
+      canvas.height = Math.max(box.height || 800, 800) * 2;
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+      img.onload = () => {
+        ctx.fillStyle = document.documentElement.getAttribute('data-theme') === 'dark' ? '#080c10' : '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        URL.revokeObjectURL(url);
+        const pngUrl = canvas.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.href = pngUrl;
+        a.download = 'cyber-turtle-drawing.png';
+        a.click();
+      };
+      img.src = url;
+    }
+
     function copyGCode() {
       navigator.clipboard.writeText(document.getElementById('gcode-preview').innerText);
       alert('✓ G-Code copied to clipboard!');
     }
 
-    function copyASCIIArt() {
+    async function copyASCIIArt() {
+      try {
+        const payload = state.mode === 'lsystem'
+          ? { axiom: document.getElementById('lsystem-axiom').value, rules: getRulesFromTable(), iterations: parseInt(document.getElementById('lsystem-iter').value) }
+          : { script: document.getElementById('logo-script-editor').value };
+        const res = await fetch('/api/export-ascii', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.ascii) {
+            navigator.clipboard.writeText(data.ascii);
+            alert('✓ Real ASCII / Braille art copied from engine to clipboard!');
+            return;
+          }
+        }
+      } catch (e) {}
       const ascii = generateBrailleASCII();
       navigator.clipboard.writeText(ascii);
       alert('✓ ASCII / Braille art copied to clipboard!');
