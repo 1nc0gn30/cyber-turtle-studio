@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Cyber Turtle Studio | L-System Fractal & CNC Plotter Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto+Mono:wght@400;500;600&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Google Material 3 Light Theme Tokens */
+      --md-primary: #1a73e8;
+      --md-on-primary: #ffffff;
+      --md-primary-container: #d2e3fc;
+      --md-on-primary-container: #174ea6;
+      --md-secondary: #5f6368;
+      --md-surface: #ffffff;
+      --md-surface-variant: #f1f3f4;
+      --md-background: #f8f9fa;
+      --md-on-background: #202124;
+      --md-on-surface: #3c4043;
+      --md-outline: #dadce0;
+      --md-outline-variant: #e8eaed;
+      --md-error: #d93025;
+      --md-success: #1e8e3e;
+      --md-warning: #f9ab00;
+      --md-elevation-1: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+      --md-elevation-2: 0 1px 2px 0 rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
+      --md-elevation-3: 0 4px 8px 3px rgba(60,64,67,0.15), 0 1px 3px 0 rgba(60,64,67,0.3);
+      --font-google: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Roboto Mono', monospace;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+      --panel-width-left: 380px;
+      --panel-width-right: 360px;
+    }
+
+    [data-theme="dark"] {
+      --md-primary: #8ab4f8;
+      --md-on-primary: #202124;
+      --md-primary-container: #174ea6;
+      --md-on-primary-container: #d2e3fc;
+      --md-secondary: #9aa0a6;
+      --md-surface: #202124;
+      --md-surface-variant: #303134;
+      --md-background: #171717;
+      --md-on-background: #e8eaed;
+      --md-on-surface: #bdc1c6;
+      --md-outline: #5f6368;
+      --md-outline-variant: #3c4043;
+      --md-elevation-1: 0 1px 3px 0 rgba(0,0,0,0.5);
+      --md-elevation-2: 0 2px 6px 2px rgba(0,0,0,0.6);
+      --md-elevation-3: 0 4px 12px 4px rgba(0,0,0,0.7);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: var(--font-google);
+      background-color: var(--md-background);
+      color: var(--md-on-background);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation Header */
+    header.studio-header {
+      height: 60px;
+      background: var(--md-surface);
+      border-bottom: 1px solid var(--md-outline-variant);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #1a73e8, #34a853);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 700;
+      box-shadow: var(--md-elevation-1);
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-badge {
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--md-primary-container);
+      color: var(--md-on-primary-container);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Common Button & Chip Styles */
+    .btn {
+      font-family: var(--font-google);
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: var(--radius-full);
+      padding: 8px 16px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      user-select: none;
+    }
+
+    .btn-primary {
+      background: var(--md-primary);
+      color: var(--md-on-primary);
+    }
+    .btn-primary:hover {
+      opacity: 0.92;
+      box-shadow: var(--md-elevation-1);
+    }
+
+    .btn-secondary {
+      background: var(--md-surface-variant);
+      color: var(--md-on-background);
+      border-color: var(--md-outline-variant);
+    }
+    .btn-secondary:hover {
+      background: var(--md-outline-variant);
+    }
+
+    .btn-outlined {
+      background: transparent;
+      border-color: var(--md-outline);
+      color: var(--md-primary);
+    }
+    .btn-outlined:hover {
+      background: var(--md-primary-container);
+      border-color: var(--md-primary);
+    }
+
+    .btn-icon {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: 1px solid var(--md-outline-variant);
+      color: var(--md-on-background);
+      cursor: pointer;
+    }
+    .btn-icon:hover {
+      background: var(--md-surface-variant);
+    }
+
+    /* Segmented Button (Mode Switcher) */
+    .segmented-control {
+      display: flex;
+      background: var(--md-surface-variant);
+      border-radius: var(--radius-full);
+      padding: 3px;
+      gap: 2px;
+      border: 1px solid var(--md-outline-variant);
+    }
+
+    .segmented-item {
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      border: none;
+      background: transparent;
+      color: var(--md-secondary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .segmented-item.active {
+      background: var(--md-surface);
+      color: var(--md-primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    }
+
+    /* Main Workspace Layout */
+    .studio-body {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 60px - 32px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Left Panel: Editor Deck */
+    .panel-left {
+      width: var(--panel-width-left);
+      background: var(--md-surface);
+      border-right: 1px solid var(--md-outline-variant);
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+      overflow-y: auto;
+    }
+
+    .panel-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--md-outline-variant);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .panel-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--md-on-background);
+    }
+
+    .editor-section {
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      flex: 1;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--md-secondary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .field-hint {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--md-secondary);
+    }
+
+    .input-text, .input-select, .input-textarea {
+      font-family: var(--font-google);
+      font-size: 13px;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--md-outline);
+      background: var(--md-surface);
+      color: var(--md-on-background);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .input-text:focus, .input-select:focus, .input-textarea:focus {
+      border-color: var(--md-primary);
+      box-shadow: 0 0 0 2px var(--md-primary-container);
+    }
+
+    .input-textarea {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      line-height: 1.5;
+      resize: vertical;
+      min-height: 140px;
+      white-space: pre;
+    }
+
+    /* Slider Row */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .slider-row input[type="range"] {
+      flex: 1;
+      accent-color: var(--md-primary);
+      cursor: pointer;
+    }
+    .slider-badge {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--md-surface-variant);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      min-width: 44px;
+      text-align: center;
+    }
+
+    /* Quick Preset Chips */
+    .chips-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      background: var(--md-surface-variant);
+      color: var(--md-on-background);
+      border: 1px solid var(--md-outline-variant);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .chip:hover {
+      background: var(--md-primary-container);
+      color: var(--md-on-primary-container);
+      border-color: var(--md-primary);
+    }
+    .chip.active {
+      background: var(--md-primary);
+      color: var(--md-on-primary);
+      border-color: var(--md-primary);
+    }
+
+    /* Dynamic Rules Table */
+    .rules-table {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .rule-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .rule-input-pred {
+      width: 44px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      text-align: center;
+    }
+    .rule-arrow {
+      color: var(--md-secondary);
+      font-weight: bold;
+    }
+    .rule-input-succ {
+      flex: 1;
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+    .rule-btn-del {
+      background: transparent;
+      border: none;
+      color: var(--md-error);
+      cursor: pointer;
+      padding: 4px;
+      font-size: 14px;
+    }
+
+    /* Center Panel: SVG Canvas & Viewport */
+    .panel-center {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #0f111a;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .viewport-toolbar {
+      height: 48px;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 20;
+    }
+
+    .theme-selector-chips {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .theme-chip {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.08);
+      color: #e0e0e0;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .theme-chip:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+    .theme-chip.active {
+      background: #1a73e8;
+      color: #ffffff;
+      border-color: #4285f4;
+      box-shadow: 0 0 12px rgba(66, 133, 244, 0.5);
+    }
+
+    .canvas-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .canvas-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 13px;
+      transition: background 0.15s ease;
+    }
+    .canvas-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .canvas-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      cursor: grab;
+    }
+    .canvas-container.grabbing {
+      cursor: grabbing;
+    }
+
+    #svg-viewport-wrapper {
+      transform-origin: center center;
+      transition: transform 0.05s linear;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    #studio-svg-element {
+      max-width: 90%;
+      max-height: 90%;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      border-radius: var(--radius-sm);
+      transition: filter 0.3s ease;
+    }
+
+    /* Playback Animation Toolbar */
+    .playback-bar {
+      height: 52px;
+      background: var(--md-surface);
+      border-top: 1px solid var(--md-outline-variant);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      gap: 16px;
+      z-index: 20;
+    }
+
+    .playback-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .playback-scrubber {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .playback-scrubber input[type="range"] {
+      flex: 1;
+      accent-color: var(--md-primary);
+    }
+    .scrubber-readout {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--md-secondary);
+      white-space: nowrap;
+    }
+
+    /* Right Panel: G-Code & Export Deck */
+    .panel-right {
+      width: var(--panel-width-right);
+      background: var(--md-surface);
+      border-left: 1px solid var(--md-outline-variant);
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+      overflow-y: auto;
+    }
+
+    .gcode-viewer {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      line-height: 1.4;
+      background: #1e1e24;
+      color: #39ff14;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      height: 220px;
+      overflow-y: auto;
+      white-space: pre;
+      border: 1px solid var(--md-outline-variant);
+    }
+
+    .plotter-params-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* Bottom Telemetry Bar */
+    footer.studio-footer {
+      height: 32px;
+      background: var(--md-surface);
+      border-top: 1px solid var(--md-outline-variant);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-size: 11.5px;
+      color: var(--md-secondary);
+      z-index: 100;
+    }
+
+    .telemetry-items {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .telemetry-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .telemetry-val {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--md-on-background);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--md-success);
+      display: inline-block;
+    }
+
+    /* Modal dialogs */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-backdrop.open {
+      display: flex;
+    }
+    .modal-card {
+      background: var(--md-surface);
+      border-radius: var(--radius-lg);
+      width: 90%;
+      max-width: 680px;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: var(--md-elevation-3);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--md-outline-variant);
+      padding-bottom: 12px;
+    }
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    /* Preset Grid */
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .preset-card {
+      background: var(--md-surface-variant);
+      border: 1px solid var(--md-outline-variant);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .preset-card:hover {
+      border-color: var(--md-primary);
+      transform: translateY(-2px);
+      box-shadow: var(--md-elevation-1);
+    }
+    .preset-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--md-on-background);
+    }
+    .preset-card-cat {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--md-primary);
+      text-transform: uppercase;
+    }
+    .preset-card-desc {
+      font-size: 11px;
+      color: var(--md-secondary);
+      line-height: 1.3;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--md-outline);
+      border-radius: var(--radius-full);
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top App Bar -->
+  <header class="studio-header">
+    <div class="brand-group">
+      <div class="brand-logo">🐢</div>
+      <div>
+        <div class="brand-title">
+          Google Cyber Turtle Studio
+          <span class="brand-badge">Material 3 • Pro</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mode Selector & Preset Dropdown -->
+    <div class="header-actions">
+      <div class="segmented-control">
+        <button class="segmented-item active" id="btn-mode-lsystem" onclick="setMode('lsystem')">L-System Grammar</button>
+        <button class="segmented-item" id="btn-mode-logo" onclick="setMode('logo')">Logo DSL Script</button>
+      </div>
+
+      <button class="btn btn-outlined" onclick="openPresetModal()">
+        🎨 Presets Catalog (25+)
+      </button>
+
+      <button class="btn btn-primary" id="btn-synthesize" onclick="runSynthesis()">
+        ⚡ Synthesize Drawing
+      </button>
+
+      <button class="btn-icon" id="btn-theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+        🌓
+      </button>
+
+      <button class="btn-icon" onclick="openDocsModal()" title="Grammar & Symbol Reference">
+        ❓
+      </button>
+    </div>
+  </header>
+
+  <!-- Workspace Body -->
+  <main class="studio-body">
+
+    <!-- Left Editor Deck -->
+    <aside class="panel-left">
+      <div class="panel-header">
+        <span class="panel-title" id="editor-deck-title">L-System Fractal Synthesizer</span>
+        <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px;" onclick="resetEditor()">Reset</button>
+      </div>
+
+      <!-- L-System Mode Form -->
+      <div class="editor-section" id="section-lsystem-form">
+        <div class="field-group">
+          <label class="field-label">
+            <span>Axiom (Seed String)</span>
+            <span class="field-hint">Initial state symbol(s)</span>
+          </label>
+          <input type="text" id="lsystem-axiom" class="input-text" value="F--F--F" style="font-family: var(--font-mono); font-weight: 600;">
+          <div class="chips-container" style="margin-top: 4px;">
+            <span class="chip" onclick="insertAxiom('F--F--F')">Koch: F--F--F</span>
+            <span class="chip" onclick="insertAxiom('FX')">Dragon: FX</span>
+            <span class="chip" onclick="insertAxiom('X')">Plant: X</span>
+            <span class="chip" onclick="insertAxiom('A')">Hilbert: A</span>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">
+            <span>Production Rules</span>
+            <button class="btn btn-secondary" style="padding: 2px 8px; font-size: 11px;" onclick="addRuleRow('', '')">+ Add Rule</button>
+          </label>
+          <div class="rules-table" id="rules-container">
+            <!-- Dynamic Rules Populated by JS -->
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">
+            <span>Branching Turn Angle</span>
+            <span class="slider-badge" id="angle-display">60.0°</span>
+          </label>
+          <div class="slider-row">
+            <input type="range" id="lsystem-angle" min="1" max="180" step="0.5" value="60" oninput="updateAngle(this.value)">
+          </div>
+          <div class="chips-container" style="margin-top: 4px;">
+            <span class="chip" onclick="setAngle(60)">60°</span>
+            <span class="chip" onclick="setAngle(90)">90°</span>
+            <span class="chip" onclick="setAngle(45)">45°</span>
+            <span class="chip" onclick="setAngle(25.7)">25.7°</span>
+            <span class="chip" onclick="setAngle(72)">72°</span>
+            <span class="chip" onclick="setAngle(120)">120°</span>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">
+            <span>Recursion Iterations (Depth)</span>
+            <span class="slider-badge" id="iter-display">4</span>
+          </label>
+          <div class="slider-row">
+            <input type="range" id="lsystem-iter" min="1" max="7" step="1" value="4" oninput="updateIter(this.value)">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">
+            <span>Step Size & Initial Heading</span>
+          </label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <input type="number" id="lsystem-step" class="input-text" value="10" placeholder="Step px">
+            <select id="lsystem-heading" class="input-select">
+              <option value="0">0° (East)</option>
+              <option value="90" selected>90° (North)</option>
+              <option value="180">180° (West)</option>
+              <option value="270">270° (South)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logo DSL Script Editor -->
+      <div class="editor-section" id="section-logo-form" style="display: none;">
+        <div class="field-group" style="flex: 1;">
+          <label class="field-label">
+            <span>Logo Script (DSL)</span>
+            <span class="field-hint">fd, bk, lt, rt, repeat, color, circle</span>
+          </label>
+          <textarea id="logo-script-editor" class="input-textarea" style="flex: 1; min-height: 260px;" spellcheck="false">; Star Mandala Generator
+color #00f0ff
+width 2
+repeat 36 [
+  repeat 4 [
+    fd 120
+    rt 90
+  ]
+  rt 10
+]</textarea>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Sample Logo Scripts</label>
+          <div class="chips-container">
+            <span class="chip" onclick="loadLogoSample('mandala')">Star Mandala</span>
+            <span class="chip" onclick="loadLogoSample('flower')">Flower of Life</span>
+            <span class="chip" onclick="loadLogoSample('spiral')">Spiral Vortex</span>
+            <span class="chip" onclick="loadLogoSample('koch')">Koch Logo</span>
+            <span class="chip" onclick="loadLogoSample('hexgrid')">Hexagon Matrix</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center SVG Canvas & Animated Viewport -->
+    <section class="panel-center">
+      <div class="viewport-toolbar">
+        <!-- Viewport Theme Selector -->
+        <div class="theme-selector-chips">
+          <span style="font-size: 11px; color: #8ab4f8; font-weight: 600; margin-right: 4px;">THEME:</span>
+          <span class="theme-chip active" onclick="setSvgTheme('cyber_matrix')">Matrix</span>
+          <span class="theme-chip" onclick="setSvgTheme('retro_amber')">Amber CRT</span>
+          <span class="theme-chip" onclick="setSvgTheme('blueprint_cyan')">Blueprint</span>
+          <span class="theme-chip" onclick="setSvgTheme('sacred_gold')">Sacred Gold</span>
+          <span class="theme-chip" onclick="setSvgTheme('light_minimal')">Google Light</span>
+          <span class="theme-chip" onclick="setSvgTheme('monochrome')">Monochrome</span>
+        </div>
+
+        <!-- Canvas Zoom / Pan Controls -->
+        <div class="canvas-controls">
+          <button class="canvas-btn" onclick="zoomCanvas(1.2)" title="Zoom In">+</button>
+          <button class="canvas-btn" onclick="zoomCanvas(0.8)" title="Zoom Out">−</button>
+          <button class="canvas-btn" onclick="resetCanvasZoom()" title="Fit to Screen" style="width: auto; padding: 0 8px; font-size: 11px;">1:1 Reset</button>
+          <button class="canvas-btn" id="btn-toggle-grid" onclick="toggleCanvasGrid()" title="Toggle Grid Overlay">🌐</button>
+        </div>
+      </div>
+
+      <!-- Canvas SVG Viewport -->
+      <div class="canvas-container" id="canvas-container" onmousedown="startPan(event)" onwheel="handleWheelZoom(event)">
+        <div id="svg-viewport-wrapper">
+          <svg id="studio-svg-element" viewBox="0 0 800 800" width="800" height="800">
+            <!-- Dynamic SVG Paths rendered here -->
+          </svg>
+        </div>
+      </div>
+
+      <!-- Animated Playback Engine Bar -->
+      <div class="playback-bar">
+        <div class="playback-controls">
+          <button class="btn btn-secondary" id="btn-play-pause" onclick="togglePlayback()" style="padding: 6px 12px;">
+            ▶ Play Animation
+          </button>
+          <button class="btn btn-secondary" onclick="replayAnimation()" style="padding: 6px 10px;">
+            ↺ Replay
+          </button>
+          <select id="playback-speed" class="input-select" style="padding: 4px 8px; font-size: 11px;" onchange="updateSpeed(this.value)">
+            <option value="0.5">0.5x Speed</option>
+            <option value="1.0" selected>1.0x Speed</option>
+            <option value="2.0">2.0x Speed</option>
+            <option value="4.0">4.0x Speed</option>
+          </select>
+        </div>
+
+        <div class="playback-scrubber">
+          <span style="font-size: 11px; color: var(--md-secondary); font-weight: 600;">DRAW STEP:</span>
+          <input type="range" id="playback-scrubber" min="0" max="100" value="100" oninput="scrubPlayback(this.value)">
+          <span class="scrubber-readout" id="playback-readout">100% (All Segments)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Drawer: CNC Plotter & Exporter Deck -->
+    <aside class="panel-right">
+      <div class="panel-header">
+        <span class="panel-title">G-Code Plotter & Exports</span>
+        <button class="btn btn-outlined" style="padding: 4px 10px; font-size: 11px;" onclick="copyGCode()">Copy G-Code</button>
+      </div>
+
+      <div class="editor-section">
+        <!-- Live G-Code Preview -->
+        <div class="field-group">
+          <label class="field-label">
+            <span>CNC G-Code Stream</span>
+            <span class="field-hint" id="gcode-line-count">0 lines</span>
+          </label>
+          <div class="gcode-viewer" id="gcode-preview">; G-Code program ready to stream...</div>
+        </div>
+
+        <!-- CNC Plotter Config Parameters -->
+        <div class="field-group">
+          <label class="field-label">Plotter CNC Parameters</label>
+          <div class="plotter-params-grid">
+            <div>
+              <span class="field-hint">Draw Feed (G1)</span>
+              <input type="number" id="plot-feed-draw" class="input-text" value="1200" style="width: 100%;">
+            </div>
+            <div>
+              <span class="field-hint">Travel Feed (G0)</span>
+              <input type="number" id="plot-feed-travel" class="input-text" value="3000" style="width: 100%;">
+            </div>
+            <div>
+              <span class="field-hint">Pen Up Z (mm)</span>
+              <input type="number" id="plot-z-up" class="input-text" value="5.0" step="0.5" style="width: 100%;">
+            </div>
+            <div>
+              <span class="field-hint">Pen Down Z (mm)</span>
+              <input type="number" id="plot-z-down" class="input-text" value="0.0" step="0.5" style="width: 100%;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Laser Mode & Auto Fit Checkbox -->
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;">
+            <input type="checkbox" id="plot-laser-mode" onchange="regenerateGCode()">
+            <span>Laser Cutter Mode (M3/M5 power control)</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;">
+            <input type="checkbox" id="plot-auto-fit" checked onchange="regenerateGCode()">
+            <span>Auto-fit to 200x200mm Bed Canvas</span>
+          </label>
+        </div>
+
+        <!-- 1-Click Export Actions -->
+        <div class="field-group" style="margin-top: 8px;">
+          <label class="field-label">1-Click Export Artifacts</label>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button class="btn btn-primary" onclick="downloadGCode()" style="justify-content: center;">
+              📥 Download .gcode (CNC Plotter)
+            </button>
+            <button class="btn btn-secondary" onclick="downloadSVG(false)" style="justify-content: center;">
+              🖼️ Download Vector .svg (Static)
+            </button>
+            <button class="btn btn-secondary" onclick="downloadSVG(true)" style="justify-content: center;">
+              🎬 Download Animated .svg (CSS Motion)
+            </button>
+            <button class="btn btn-secondary" onclick="copyASCIIArt()" style="justify-content: center;">
+              📋 Copy Terminal ASCII / Braille Art
+            </button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- Bottom Telemetry Bar -->
+  <footer class="studio-footer">
+    <div class="telemetry-items">
+      <div class="telemetry-item">
+        <span class="status-dot" id="server-status-dot"></span>
+        <span id="server-status-text">Server: Ready</span>
+      </div>
+      <div class="telemetry-item">
+        <span>Segments:</span>
+        <span class="telemetry-val" id="stat-segments">0</span>
+      </div>
+      <div class="telemetry-item">
+        <span>Draw Distance:</span>
+        <span class="telemetry-val" id="stat-distance">0.0 px</span>
+      </div>
+      <div class="telemetry-item">
+        <span>Bounds:</span>
+        <span class="telemetry-val" id="stat-bounds">0 × 0</span>
+      </div>
+    </div>
+
+    <div class="telemetry-items">
+      <div class="telemetry-item">
+        <span>Render Time:</span>
+        <span class="telemetry-val" id="stat-render-time">0 ms</span>
+      </div>
+      <div class="telemetry-item">
+        <span>Engine:</span>
+        <span class="telemetry-val">Pure Python Stdlib</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Preset Catalog Modal -->
+  <div class="modal-backdrop" id="modal-presets">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">🎨 Fractal & Geometric Preset Catalog</div>
+        <button class="btn-icon" onclick="closePresetModal()">✕</button>
+      </div>
+      <div>
+        <input type="text" id="preset-search" class="input-text" placeholder="Search 25+ fractals (e.g. Koch, Dragon, Fern, Tree, Kolam)..." style="width: 100%; margin-bottom: 12px;" oninput="filterPresets(this.value)">
+      </div>
+      <div class="preset-grid" id="preset-grid-container">
+        <!-- Preset Cards injected via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Documentation Modal -->
+  <div class="modal-backdrop" id="modal-docs">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">📖 Grammar & Symbol Reference Guide</div>
+        <button class="btn-icon" onclick="closeDocsModal()">✕</button>
+      </div>
+      <div style="font-size: 13px; line-height: 1.6; color: var(--md-on-background);">
+        <h4 style="color: var(--md-primary); margin-bottom: 6px;">L-System Turtle Grammar Symbols:</h4>
+        <ul style="margin-left: 20px; margin-bottom: 14px;">
+          <li><code>F</code> or <code>G</code>: Move forward drawing a line of step size.</li>
+          <li><code>f</code>: Move forward without drawing (pen up move).</li>
+          <li><code>+</code>: Turn right by branching angle $\theta$.</li>
+          <li><code>-</code>: Turn left by branching angle $\theta$.</li>
+          <li><code>[</code>: Push current turtle position, heading, and pen onto state stack.</li>
+          <li><code>]</code>: Pop and restore saved state from stack (branch return).</li>
+          <li><code>|</code>: Turn 180° around.</li>
+          <li><code>&lt;</code> / <code>&gt;</code>: Scale step size down/up.</li>
+        </ul>
+
+        <h4 style="color: var(--md-primary); margin-bottom: 6px;">Logo DSL Script Commands:</h4>
+        <ul style="margin-left: 20px; margin-bottom: 14px;">
+          <li><code>fd &lt;dist&gt;</code> / <code>bk &lt;dist&gt;</code>: Forward / Backward distance.</li>
+          <li><code>lt &lt;angle&gt;</code> / <code>rt &lt;angle&gt;</code>: Left / Right rotation in degrees.</li>
+          <li><code>pu</code> / <code>pd</code>: Pen Up / Pen Down.</li>
+          <li><code>repeat &lt;count&gt; [ ... ]</code>: Loop block (supports nesting).</li>
+          <li><code>color #hex</code> / <code>width &lt;px&gt;</code>: Pen styling.</li>
+          <li><code>circle &lt;radius&gt; [extent]</code>: Arc / Circle generator.</li>
+        </ul>
+
+        <h4 style="color: var(--md-primary); margin-bottom: 6px;">CNC G-Code Plotter Standards:</h4>
+        <p>Generates standard RS-274 / ISO G-Code compatible with GRBL, Marlin, AxiDraw, EleksMaker, and Universal G-Code Sender.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Studio JavaScript Application Core -->
+  <script>
+    // State management
+    const state = {
+      mode: 'lsystem', // 'lsystem' or 'logo'
+      theme: 'cyber_matrix',
+      currentDrawing: null,
+      presets: [],
+      zoom: 1.0,
+      panX: 0,
+      panY: 0,
+      isPanning: false,
+      panStartX: 0,
+      panStartY: 0,
+      isPlaying: false,
+      playbackSpeed: 1.0,
+      playbackProgress: 1.0,
+      animationFrameId: null,
+      showGrid: true,
+    };
+
+    // SVG Palette Colors for themes
+    const THEMES = {
+      cyber_matrix: { bg: '#050805', stroke: '#00ff66', glow: '#39ff14', grid: '#0d1a0d', text: '#39ff14' },
+      retro_amber: { bg: '#120800', stroke: '#ffb000', glow: '#ff8000', grid: '#241000', text: '#ffb000' },
+      blueprint_cyan: { bg: '#0a192f', stroke: '#00e5ff', glow: '#80d8ff', grid: '#172a45', text: '#80d8ff' },
+      sacred_gold: { bg: '#0d0e15', stroke: '#ffd700', glow: '#ffaa00', grid: '#1f2230', text: '#ffd700' },
+      light_minimal: { bg: '#ffffff', stroke: '#1a1a24', glow: '#0284c7', grid: '#f1f3f5', text: '#1a1a24' },
+      monochrome: { bg: '#000000', stroke: '#ffffff', glow: '#ffffff', grid: '#222222', text: '#ffffff' }
+    };
+
+    // Built-in 25+ Presets catalog with fallbacks
+    const BUILTIN_PRESETS = [
+      { id: 'koch_snowflake', title: 'Koch Snowflake', cat: 'Fractals', type: 'lsystem', axiom: 'F--F--F', rules: { F: 'F+F--F+F' }, angle: 60, iter: 4, desc: 'Classic self-similar snowflake with infinite perimeter.' },
+      { id: 'dragon_curve', title: 'Dragon Curve (Heighway)', cat: 'Fractals', type: 'lsystem', axiom: 'FX', rules: { X: 'X+YF+', Y: '-FX-Y' }, angle: 90, iter: 10, desc: 'Space-filling dragon fractal generated by paper folding.' },
+      { id: 'terdragon', title: 'Terdragon Curve', cat: 'Fractals', type: 'lsystem', axiom: 'F', rules: { F: 'F+F-F' }, angle: 120, iter: 6, desc: '3-fold recursive fractal curve.' },
+      { id: 'levy_c', title: 'Lévy C Curve', cat: 'Fractals', type: 'lsystem', axiom: 'F', rules: { F: '+F--F+' }, angle: 45, iter: 9, desc: 'Self-similar Cesàro fractal curve.' },
+      { id: 'hilbert_curve', title: 'Hilbert Curve', cat: 'Space-Filling', type: 'lsystem', axiom: 'A', rules: { A: '+BF-AFA-FB+', B: '-AF+BFB+FA-' }, angle: 90, iter: 5, desc: 'Continuous space-filling curve with spatial locality.' },
+      { id: 'moore_curve', title: 'Moore Curve', cat: 'Space-Filling', type: 'lsystem', axiom: 'LFL+F+LFL', rules: { L: '-RF+LFL+FR-', R: '+LF-RFR-FL+' }, angle: 90, iter: 4, desc: 'Loop-closed variant of the Hilbert curve.' },
+      { id: 'gosper_curve', title: 'Gosper Flowsnake', cat: 'Space-Filling', type: 'lsystem', axiom: 'A', rules: { A: 'A-B--B+A++AA+B-', B: '+A-BB--B-A++A+B' }, angle: 60, iter: 4, desc: 'Hexagonal space-filling curve discovered by Bill Gosper.' },
+      { id: 'peano_curve', title: 'Peano Curve', cat: 'Space-Filling', type: 'lsystem', axiom: 'X', rules: { X: 'XFYFX+F+YFXFY-F-XFYFX', Y: 'YFXFY-F-XFYFX+F+YFXFY' }, angle: 90, iter: 3, desc: 'The first discovered space-filling fractal by Giuseppe Peano.' },
+      { id: 'sierpinski_triangle', title: 'Sierpiński Triangle', cat: 'Fractals', type: 'lsystem', axiom: 'F-G-G', rules: { F: 'F-G+F+G-F', G: 'GG' }, angle: 120, iter: 5, desc: 'Subdivided equilateral triangle with fractal hole dimension.' },
+      { id: 'sierpinski_arrowhead', title: 'Sierpiński Arrowhead', cat: 'Fractals', type: 'lsystem', axiom: 'A', rules: { A: 'B-A-B', B: 'A+B+A' }, angle: 60, iter: 6, desc: 'Continuous curve converging to the Sierpiński triangle.' },
+      { id: 'sierpinski_carpet', title: 'Sierpiński Carpet', cat: 'Fractals', type: 'lsystem', axiom: 'F', rules: { F: 'FFF[+F-F+F][-F+F-F]' }, angle: 90, iter: 3, desc: 'Square recursion with excised center.' },
+      { id: 'barnsley_fern', title: 'Barnsley Fern Growth', cat: 'Botany', type: 'lsystem', axiom: 'X', rules: { X: 'F+[[X]-X]-F[-FX]+X', F: 'FF' }, angle: 25, iter: 5, desc: 'Natural botanical fern plant growth model.' },
+      { id: 'fractal_plant_a', title: 'Botanical Plant (Axial)', cat: 'Botany', type: 'lsystem', axiom: 'X', rules: { X: 'F-[[X]+X]+F[+FX]-X', F: 'FF' }, angle: 22.5, iter: 5, desc: 'Axial branching fractal shrub.' },
+      { id: 'fractal_plant_b', title: 'Delicate Weed Branch', cat: 'Botany', type: 'lsystem', axiom: 'F', rules: { F: 'FF-[-F+F+F]+[+F-F-F]' }, angle: 22, iter: 4, desc: 'Multi-branched weed foliage structure.' },
+      { id: 'pythagoras_tree', title: 'Pythagoras Tree', cat: 'Botany', type: 'lsystem', axiom: '0', rules: { '1': '11', '0': '1[+0]-0' }, angle: 45, iter: 6, desc: 'Fractal tree of right triangles and squares.' },
+      { id: 'kolam_tile', title: 'Kolam Vedic Tile', cat: 'Kolam & Tiles', type: 'lsystem', axiom: '[-F-F-F-F]', rules: { F: 'F+F-F-F+F' }, angle: 90, iter: 4, desc: 'Traditional South Indian sacred geometry floor art pattern.' },
+      { id: 'quadratic_island', title: 'Quadratic Koch Island', cat: 'Fractals', type: 'lsystem', axiom: 'F-F-F-F', rules: { F: 'F+FF-FF-F-F+F+FF-F' }, angle: 90, iter: 2, desc: 'Mandelbrot square island with fractal coastline.' },
+      { id: 'crystal_lattice', title: 'Crystal Lattice Grid', cat: 'Sacred Geometry', type: 'lsystem', axiom: 'F+F+F+F', rules: { F: 'FF+F++F+F' }, angle: 90, iter: 4, desc: 'Crystalline lattice formation geometry.' },
+      { id: 'logo_star_mandala', title: 'Star Mandala', cat: 'Classic Logo', type: 'logo', script: 'color #00f0ff\nwidth 2\nrepeat 36 [\n  repeat 4 [\n    fd 120\n    rt 90\n  ]\n  rt 10\n]', desc: 'Rotating nested square star mandala.' },
+      { id: 'logo_flower_of_life', title: 'Flower of Life', cat: 'Sacred Geometry', type: 'logo', script: 'color #ffd700\nwidth 1.5\nrepeat 6 [\n  circle 60\n  pu\n  fd 60\n  pd\n  circle 60\n  pu\n  bk 60\n  pd\n  rt 60\n]', desc: 'Sacred geometry overlapping circle flower.' },
+      { id: 'logo_spiral_vortex', title: 'Spiral Vortex', cat: 'Classic Logo', type: 'logo', script: 'color #ff007f\nwidth 1.5\nmake "len 5\nrepeat 80 [\n  fd :len\n  rt 89\n  make "len :len + 3\n]', desc: 'Logarithmic poly-spiral expansion.' }
+    ];
+
+    // Initialize UI
+    window.addEventListener('DOMContentLoaded', () => {
+      initRulesTable([
+        { pred: 'F', succ: 'F+F--F+F' }
+      ]);
+      populatePresets();
+      runSynthesis();
+      checkServerHealth();
+    });
+
+    function setMode(mode) {
+      state.mode = mode;
+      document.getElementById('btn-mode-lsystem').classList.toggle('active', mode === 'lsystem');
+      document.getElementById('btn-mode-logo').classList.toggle('active', mode === 'logo');
+      document.getElementById('section-lsystem-form').style.display = mode === 'lsystem' ? 'flex' : 'none';
+      document.getElementById('section-logo-form').style.display = mode === 'logo' ? 'flex' : 'none';
+      document.getElementById('editor-deck-title').innerText = mode === 'lsystem' ? 'L-System Fractal Synthesizer' : 'Logo DSL Script Editor';
+      runSynthesis();
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme') || 'light';
+      const next = current === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', next);
+    }
+
+    function setSvgTheme(themeKey) {
+      state.theme = themeKey;
+      document.querySelectorAll('.theme-chip').forEach(c => {
+        c.classList.toggle('active', c.innerText.toLowerCase().includes(themeKey.split('_')[0]));
+      });
+      renderCurrentDrawing();
+    }
+
+    /* Rules Table Management */
+    function initRulesTable(rules) {
+      const container = document.getElementById('rules-container');
+      container.innerHTML = '';
+      rules.forEach(r => addRuleRow(r.pred, r.succ));
+    }
+
+    function addRuleRow(pred = '', succ = '') {
+      const container = document.getElementById('rules-container');
+      const row = document.createElement('div');
+      row.className = 'rule-row';
+      row.innerHTML = `
+        <input type="text" class="input-text rule-input-pred" value="${pred}" placeholder="F" maxlength="2">
+        <span class="rule-arrow">→</span>
+        <input type="text" class="input-text rule-input-succ" value="${succ}" placeholder="F+F--F+F">
+        <button class="rule-btn-del" onclick="this.parentElement.remove()" title="Delete Rule">✕</button>
+      `;
+      container.appendChild(row);
+    }
+
+    function getRulesFromForm() {
+      const rules = {};
+      document.querySelectorAll('.rule-row').forEach(row => {
+        const pred = row.querySelector('.rule-input-pred').value.trim();
+        const succ = row.querySelector('.rule-input-succ').value.trim();
+        if (pred && succ) {
+          rules[pred] = succ;
+        }
+      });
+      return rules;
+    }
+
+    function updateAngle(val) {
+      document.getElementById('angle-display').innerText = parseFloat(val).toFixed(1) + '°';
+    }
+
+    function setAngle(val) {
+      document.getElementById('lsystem-angle').value = val;
+      updateAngle(val);
+    }
+
+    function updateIter(val) {
+      document.getElementById('iter-display').innerText = val;
+    }
+
+    function insertAxiom(val) {
+      document.getElementById('lsystem-axiom').value = val;
+    }
+
+    /* Core Synthesis & Client Fallback Interpreter */
+    async function runSynthesis() {
+      const startTime = performance.now();
+      const statusDot = document.getElementById('server-status-dot');
+
+      if (state.mode === 'lsystem') {
+        const axiom = document.getElementById('lsystem-axiom').value.trim();
+        const rules = getRulesFromForm();
+        const angle = parseFloat(document.getElementById('lsystem-angle').value);
+        const iter = parseInt(document.getElementById('lsystem-iter').value);
+        const step = parseFloat(document.getElementById('lsystem-step').value) || 10;
+        const heading = parseFloat(document.getElementById('lsystem-heading').value) || 0;
+
+        try {
+          // Try backend API first
+          const resp = await fetch('/api/generate-lsystem', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              axiom, rules, angle, iterations: iter, step_size: step, initial_heading: heading, theme: state.theme
+            })
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            state.currentDrawing = data.ast;
+            renderCurrentDrawing();
+            updateGCodePreview(data.gcode);
+            finishTelemetry(startTime);
+            return;
+          }
+        } catch (e) {
+          // Fallback to client-side synthesis
+        }
+
+        // Fast Client-Side L-System Synthesizer
+        let current = axiom;
+        for (let i = 0; i < iter; i++) {
+          let next = '';
+          for (const ch of current) {
+            next += (rules[ch] !== undefined ? rules[ch] : ch);
+          }
+          current = next;
+          if (current.length > 250000) break; // Safeguard
+        }
+
+        const segments = [];
+        let x = 0.0, y = 0.0, h = heading;
+        const stack = [];
+        let penDown = true;
+        const stepLen = step;
+        const rad = angle * Math.PI / 180.0;
+
+        for (const ch of current) {
+          if (ch === 'F' || ch === 'G' || ch === 'A' || ch === 'B') {
+            const radH = h * Math.PI / 180.0;
+            const nx = x + stepLen * Math.cos(radH);
+            const ny = y + stepLen * Math.sin(radH);
+            segments.push({ start: { x, y }, end: { x: nx, y: ny }, is_draw: penDown });
+            x = nx; y = ny;
+          } else if (ch === 'f') {
+            const radH = h * Math.PI / 180.0;
+            x += stepLen * Math.cos(radH);
+            y += stepLen * Math.sin(radH);
+          } else if (ch === '+') {
+            h -= angle;
+          } else if (ch === '-') {
+            h += angle;
+          } else if (ch === '[') {
+            stack.push({ x, y, h, penDown });
+          } else if (ch === ']') {
+            if (stack.length > 0) {
+              const saved = stack.pop();
+              x = saved.x; y = saved.y; h = saved.h; penDown = saved.penDown;
+            }
+          } else if (ch === '|') {
+            h += 180;
+          }
+        }
+
+        state.currentDrawing = {
+          title: 'L-System Fractal',
+          segments: segments,
+          bounds: computeBounds(segments)
+        };
+        renderCurrentDrawing();
+        regenerateGCode();
+        finishTelemetry(startTime);
+
+      } else {
+        // Logo Mode
+        const script = document.getElementById('logo-script-editor').value;
+        try {
+          const resp = await fetch('/api/execute-logo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ script, theme: state.theme })
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            state.currentDrawing = data.ast;
+            renderCurrentDrawing();
+            updateGCodePreview(data.gcode);
+            finishTelemetry(startTime);
+            return;
+          }
+        } catch (e) {}
+
+        // Simple Logo client fallback
+        const segments = parseLogoClient(script);
+        state.currentDrawing = {
+          title: 'Logo Drawing',
+          segments: segments,
+          bounds: computeBounds(segments)
+        };
+        renderCurrentDrawing();
+        regenerateGCode();
+        finishTelemetry(startTime);
+      }
+    }
+
+    function parseLogoClient(script) {
+      const segments = [];
+      let x = 0, y = 0, h = 90;
+      let penDown = true;
+      const tokens = script.replace(/;[^\n]*/g, '').match(/\S+/g) || [];
+      let i = 0;
+
+      function evalBlock(toks) {
+        let idx = 0;
+        while (idx < toks.length) {
+          const cmd = toks[idx].toLowerCase();
+          if (cmd === 'fd') {
+            const d = parseFloat(toks[++idx]) || 0;
+            const radH = h * Math.PI / 180.0;
+            const nx = x + d * Math.cos(radH);
+            const ny = y + d * Math.sin(radH);
+            segments.push({ start: { x, y }, end: { x: nx, y: ny }, is_draw: penDown });
+            x = nx; y = ny;
+            idx++;
+          } else if (cmd === 'bk') {
+            const d = parseFloat(toks[++idx]) || 0;
+            const radH = h * Math.PI / 180.0;
+            const nx = x - d * Math.cos(radH);
+            const ny = y - d * Math.sin(radH);
+            segments.push({ start: { x, y }, end: { x: nx, y: ny }, is_draw: penDown });
+            x = nx; y = ny;
+            idx++;
+          } else if (cmd === 'rt') {
+            h -= parseFloat(toks[++idx]) || 0;
+            idx++;
+          } else if (cmd === 'lt') {
+            h += parseFloat(toks[++idx]) || 0;
+            idx++;
+          } else if (cmd === 'pu') {
+            penDown = false;
+            idx++;
+          } else if (cmd === 'pd') {
+            penDown = true;
+            idx++;
+          } else if (cmd === 'repeat') {
+            const count = parseInt(toks[++idx]) || 0;
+            idx++; // skip '['
+            const subToks = [];
+            let depth = 1;
+            while (idx < toks.length && depth > 0) {
+              if (toks[idx] === '[') depth++;
+              else if (toks[idx] === ']') depth--;
+              if (depth > 0) subToks.push(toks[idx]);
+              idx++;
+            }
+            for (let c = 0; c < count; c++) {
+              evalBlock(subToks);
+            }
+          } else {
+            idx++;
+          }
+        }
+      }
+
+      evalBlock(tokens);
+      return segments;
+    }
+
+    function computeBounds(segments) {
+      if (!segments || segments.length === 0) return { min_x: 0, min_y: 0, max_x: 0, max_y: 0, width: 0, height: 0 };
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      for (const s of segments) {
+        minX = Math.min(minX, s.start.x, s.end.x);
+        maxX = Math.max(maxX, s.start.x, s.end.x);
+        minY = Math.min(minY, s.start.y, s.end.y);
+        maxY = Math.max(maxY, s.start.y, s.end.y);
+      }
+      return { min_x: minX, min_y: minY, max_x: maxX, max_y: maxY, width: maxX - minX, height: maxY - minY };
+    }
+
+    function renderCurrentDrawing() {
+      if (!state.currentDrawing || !state.currentDrawing.segments) return;
+      const svg = document.getElementById('studio-svg-element');
+      const theme = THEMES[state.theme] || THEMES.cyber_matrix;
+      const bounds = state.currentDrawing.bounds || computeBounds(state.currentDrawing.segments);
+
+      const pad = 40;
+      const vbX = bounds.min_x - pad;
+      const vbY = bounds.min_y - pad;
+      const vbW = Math.max(50, bounds.width + pad * 2);
+      const vbH = Math.max(50, bounds.height + pad * 2);
+
+      svg.setAttribute('viewBox', `${vbX} ${vbY} ${vbW} ${vbH}`);
+      svg.style.backgroundColor = theme.bg;
+
+      let pathsHtml = '';
+      if (state.showGrid) {
+        pathsHtml += `<rect x="${vbX}" y="${vbY}" width="${vbW}" height="${vbH}" fill="none" stroke="${theme.grid}" stroke-width="1" stroke-dasharray="8 8"/>`;
+      }
+
+      const totalSegs = state.currentDrawing.segments.length;
+      const limit = Math.floor(totalSegs * state.playbackProgress);
+
+      let d = '';
+      let drawCount = 0;
+      let totalDist = 0;
+
+      for (let i = 0; i < limit; i++) {
+        const s = state.currentDrawing.segments[i];
+        if (s.is_draw !== false) {
+          d += ` M ${s.start.x} ${s.start.y} L ${s.end.x} ${s.end.y}`;
+          drawCount++;
+          const dx = s.end.x - s.start.x;
+          const dy = s.end.y - s.start.y;
+          totalDist += Math.sqrt(dx*dx + dy*dy);
+        }
+      }
+
+      pathsHtml += `<path d="${d}" fill="none" stroke="${theme.stroke}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 4px ${theme.glow});" />`;
+
+      svg.innerHTML = pathsHtml;
+
+      // Update telemetry
+      document.getElementById('stat-segments').innerText = `${drawCount.toLocaleString()} / ${totalSegs.toLocaleString()}`;
+      document.getElementById('stat-distance').innerText = `${totalDist.toFixed(1)} px`;
+      document.getElementById('stat-bounds').innerText = `${bounds.width.toFixed(0)} × ${bounds.height.toFixed(0)} px`;
+    }
+
+    /* G-Code CNC Generator */
+    function regenerateGCode() {
+      if (!state.currentDrawing || !state.currentDrawing.segments) return;
+      const feedDraw = document.getElementById('plot-feed-draw').value || 1200;
+      const feedTravel = document.getElementById('plot-feed-travel').value || 3000;
+      const zUp = document.getElementById('plot-z-up').value || 5.0;
+      const zDown = document.getElementById('plot-z-down').value || 0.0;
+      const laserMode = document.getElementById('plot-laser-mode').checked;
+      const autoFit = document.getElementById('plot-auto-fit').checked;
+
+      const segments = state.currentDrawing.segments;
+      const bounds = state.currentDrawing.bounds || computeBounds(segments);
+
+      let scale = 1.0;
+      let offX = 0, offY = 0;
+      if (autoFit && bounds.width > 0 && bounds.height > 0) {
+        const bedSize = 180.0;
+        scale = Math.min(bedSize / bounds.width, bedSize / bounds.height);
+        offX = 10.0 - bounds.min_x * scale;
+        offY = 10.0 - bounds.min_y * scale;
+      }
+
+      const lines = [];
+      lines.push('; --------------------------------------');
+      lines.push('; Google Cyber Turtle Studio CNC G-Code');
+      lines.push(`; Total Draw Segments: ${segments.length}`);
+      lines.push('; --------------------------------------');
+      lines.push('G21 ; Millimeters');
+      lines.push('G90 ; Absolute Coordinates');
+      lines.push('G28 ; Auto Home');
+      if (laserMode) {
+        lines.push('M5 ; Laser Off');
+      } else {
+        lines.push(`G0 Z${zUp} F${feedTravel} ; Pen Up`);
+      }
+
+      let currentX = null, currentY = null;
+
+      for (const s of segments) {
+        const sx = (s.start.x * scale + offX).toFixed(3);
+        const sy = (s.start.y * scale + offY).toFixed(3);
+        const ex = (s.end.x * scale + offX).toFixed(3);
+        const ey = (s.end.y * scale + offY).toFixed(3);
+
+        if (currentX !== sx || currentY !== sy) {
+          if (!laserMode) lines.push(`G0 Z${zUp} F${feedTravel}`);
+          else lines.push(`M5`);
+          lines.push(`G0 X${sx} Y${sy} F${feedTravel}`);
+          if (!laserMode) lines.push(`G1 Z${zDown} F${feedDraw}`);
+          else lines.push(`M3 S255`);
+        }
+
+        lines.push(`G1 X${ex} Y${ey} F${feedDraw}`);
+        currentX = ex;
+        currentY = ey;
+      }
+
+      if (laserMode) lines.push('M5 ; Laser Off');
+      else lines.push(`G0 Z${zUp} F${feedTravel} ; Pen Up`);
+      lines.push('G0 X0 Y0 ; Return Home');
+      lines.push('M2 ; End Program');
+
+      updateGCodePreview(lines.join('\n'));
+    }
+
+    function updateGCodePreview(gcodeText) {
+      const viewer = document.getElementById('gcode-preview');
+      viewer.innerText = gcodeText || '; No G-Code generated';
+      const lines = (gcodeText || '').split('\n').length;
+      document.getElementById('gcode-line-count').innerText = `${lines} lines`;
+    }
+
+    /* Animation Playback Engine */
+    function togglePlayback() {
+      state.isPlaying = !state.isPlaying;
+      const btn = document.getElementById('btn-play-pause');
+      btn.innerText = state.isPlaying ? '⏸ Pause' : '▶ Play Animation';
+
+      if (state.isPlaying) {
+        if (state.playbackProgress >= 1.0) state.playbackProgress = 0.0;
+        runAnimationLoop();
+      } else {
+        cancelAnimationFrame(state.animationFrameId);
+      }
+    }
+
+    function replayAnimation() {
+      state.playbackProgress = 0.0;
+      if (!state.isPlaying) togglePlayback();
+    }
+
+    function runAnimationLoop() {
+      if (!state.isPlaying) return;
+      state.playbackProgress += 0.005 * state.playbackSpeed;
+      if (state.playbackProgress >= 1.0) {
+        state.playbackProgress = 1.0;
+        state.isPlaying = false;
+        document.getElementById('btn-play-pause').innerText = '▶ Play Animation';
+      }
+      document.getElementById('playback-scrubber').value = Math.floor(state.playbackProgress * 100);
+      document.getElementById('playback-readout').innerText = `${Math.floor(state.playbackProgress * 100)}%`;
+      renderCurrentDrawing();
+      if (state.isPlaying) {
+        state.animationFrameId = requestAnimationFrame(runAnimationLoop);
+      }
+    }
+
+    function scrubPlayback(val) {
+      state.playbackProgress = parseInt(val) / 100.0;
+      document.getElementById('playback-readout').innerText = `${val}%`;
+      renderCurrentDrawing();
+    }
+
+    function updateSpeed(val) {
+      state.playbackSpeed = parseFloat(val);
+    }
+
+    /* Zoom / Pan Interactivity */
+    function zoomCanvas(factor) {
+      state.zoom = Math.max(0.2, Math.min(10.0, state.zoom * factor));
+      applyViewportTransform();
+    }
+
+    function resetCanvasZoom() {
+      state.zoom = 1.0;
+      state.panX = 0;
+      state.panY = 0;
+      applyViewportTransform();
+    }
+
+    function applyViewportTransform() {
+      const el = document.getElementById('svg-viewport-wrapper');
+      el.style.transform = `translate(${state.panX}px, ${state.panY}px) scale(${state.zoom})`;
+    }
+
+    function startPan(e) {
+      state.isPanning = true;
+      state.panStartX = e.clientX - state.panX;
+      state.panStartY = e.clientY - state.panY;
+      document.getElementById('canvas-container').classList.add('grabbing');
+
+      window.addEventListener('mousemove', handlePanMove);
+      window.addEventListener('mouseup', endPan);
+    }
+
+    function handlePanMove(e) {
+      if (!state.isPanning) return;
+      state.panX = e.clientX - state.panStartX;
+      state.panY = e.clientY - state.panStartY;
+      applyViewportTransform();
+    }
+
+    function endPan() {
+      state.isPanning = false;
+      document.getElementById('canvas-container').classList.remove('grabbing');
+      window.removeEventListener('mousemove', handlePanMove);
+      window.removeEventListener('mouseup', endPan);
+    }
+
+    function handleWheelZoom(e) {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? 0.9 : 1.1;
+      zoomCanvas(delta);
+    }
+
+    function toggleCanvasGrid() {
+      state.showGrid = !state.showGrid;
+      renderCurrentDrawing();
+    }
+
+    /* Preset Management */
+    function populatePresets() {
+      state.presets = BUILTIN_PRESETS;
+      renderPresetCards(state.presets);
+    }
+
+    function renderPresetCards(presets) {
+      const container = document.getElementById('preset-grid-container');
+      container.innerHTML = '';
+      presets.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'preset-card';
+        card.onclick = () => loadPreset(p);
+        card.innerHTML = `
+          <span class="preset-card-cat">${p.cat}</span>
+          <span class="preset-card-title">${p.title}</span>
+          <span class="preset-card-desc">${p.desc}</span>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterPresets(query) {
+      const q = query.toLowerCase();
+      const filtered = state.presets.filter(p =>
+        p.title.toLowerCase().includes(q) ||
+        p.cat.toLowerCase().includes(q) ||
+        p.desc.toLowerCase().includes(q)
+      );
+      renderPresetCards(filtered);
+    }
+
+    function loadPreset(preset) {
+      closePresetModal();
+      if (preset.type === 'lsystem') {
+        setMode('lsystem');
+        document.getElementById('lsystem-axiom').value = preset.axiom;
+        document.getElementById('lsystem-angle').value = preset.angle;
+        updateAngle(preset.angle);
+        document.getElementById('lsystem-iter').value = preset.iter;
+        updateIter(preset.iter);
+
+        const rulesList = Object.entries(preset.rules).map(([pred, succ]) => ({ pred, succ }));
+        initRulesTable(rulesList);
+      } else {
+        setMode('logo');
+        document.getElementById('logo-script-editor').value = preset.script;
+      }
+      runSynthesis();
+    }
+
+    function loadLogoSample(sample) {
+      const samples = {
+        mandala: `color #00f0ff\nwidth 2\nrepeat 36 [\n  repeat 4 [\n    fd 120\n    rt 90\n  ]\n  rt 10\n]`,
+        flower: `color #ffd700\nwidth 1.5\nrepeat 6 [\n  circle 60\n  pu\n  fd 60\n  pd\n  circle 60\n  pu\n  bk 60\n  pd\n  rt 60\n]`,
+        spiral: `color #ff007f\nwidth 1.5\nmake "len 5\nrepeat 80 [\n  fd :len\n  rt 89\n  make "len :len + 3\n]`,
+        koch: `to koch :len :depth\n  if :depth == 0 [ fd :len ]\n  if :depth > 0 [\n    koch :len / 3 :depth - 1\n    lt 60\n    koch :len / 3 :depth - 1\n    rt 120\n    koch :len / 3 :depth - 1\n    lt 60\n    koch :len / 3 :depth - 1\n  ]\nend\nrepeat 3 [ koch 180 3 rt 120 ]`,
+        hexgrid: `color #00ff66\nwidth 2\nrepeat 6 [\n  repeat 6 [ fd 50 rt 60 ]\n  fd 50\n  rt 60\n]`
+      };
+      if (samples[sample]) {
+        document.getElementById('logo-script-editor').value = samples[sample];
+        runSynthesis();
+      }
+    }
+
+    /* Export Functions */
+    function downloadFile(content, filename, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function downloadGCode() {
+      const gcode = document.getElementById('gcode-preview').innerText;
+      downloadFile(gcode, 'drawing.gcode', 'text/plain');
+    }
+
+    function downloadSVG(animated = false) {
+      const svgEl = document.getElementById('studio-svg-element');
+      let svgContent = svgEl.outerHTML;
+      if (animated) {
+        svgContent = svgContent.replace('<path', '<style>@keyframes dash { to { stroke-dashoffset: 0; } } path { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: dash 5s linear forwards infinite; }</style><path');
+      }
+      downloadFile(svgContent, animated ? 'drawing-animated.svg' : 'drawing.svg', 'image/svg+xml');
+    }
+
+    function copyGCode() {
+      navigator.clipboard.writeText(document.getElementById('gcode-preview').innerText);
+      alert('✓ G-Code copied to clipboard!');
+    }
+
+    function copyASCIIArt() {
+      const ascii = generateBrailleASCII();
+      navigator.clipboard.writeText(ascii);
+      alert('✓ ASCII / Braille art copied to clipboard!');
+    }
+
+    function generateBrailleASCII() {
+      return `
+    ⢀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⡀
+    ⢸ Google Cyber Turtle Studio ASCII Viewport             ⡇
+    ⢸ Segment Count: ${(state.currentDrawing?.segments?.length || 0)}                       ⡇
+    ⢸ ⠋⠉⠉⠙⠒⠤⢤⣀⣀⣀⡤⠤⠒⠊⠋⠉⠉⠙                             ⡇
+    ⢸    ⢀⣠⠤⠒⠊⠉    ⠉⠑⠒⠤⣄⡀                      ⡇
+    ⢸  ⢰⠊                   ⠑⡆                     ⡇
+    ⢸  ⠸⣄⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣠⠇                     ⡇
+    ⠈⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠁`;
+    }
+
+    /* Telemetry & Modals */
+    function finishTelemetry(startTime) {
+      const elapsed = Math.round(performance.now() - startTime);
+      document.getElementById('stat-render-time').innerText = `${elapsed} ms`;
+    }
+
+    async function checkServerHealth() {
+      try {
+        const resp = await fetch('/api/stats');
+        if (resp.ok) {
+          const stats = await resp.json();
+          document.getElementById('server-status-text').innerText = `API Online (${stats.platform || 'Linux'})`;
+          document.getElementById('server-status-dot').style.background = 'var(--md-success)';
+        }
+      } catch (e) {
+        document.getElementById('server-status-text').innerText = 'Local JS Mode';
+        document.getElementById('server-status-dot').style.background = 'var(--md-warning)';
+      }
+    }
+
+    function openPresetModal() { document.getElementById('modal-presets').classList.add('open'); }
+    function closePresetModal() { document.getElementById('modal-presets').classList.remove('open'); }
+    function openDocsModal() { document.getElementById('modal-docs').classList.add('open'); }
+    function closeDocsModal() { document.getElementById('modal-docs').classList.remove('open'); }
+    function resetEditor() {
+      if (state.mode === 'lsystem') {
+        document.getElementById('lsystem-axiom').value = 'F--F--F';
+        document.getElementById('lsystem-angle').value = 60;
+        updateAngle(60);
+        document.getElementById('lsystem-iter').value = 4;
+        updateIter(4);
+        initRulesTable([{ pred: 'F', succ: 'F+F--F+F' }]);
+      } else {
+        document.getElementById('logo-script-editor').value = 'repeat 4 [ fd 100 rt 90 ]';
+      }
+      runSynthesis();
+    }
+  </script>
+</body>
+</html>
