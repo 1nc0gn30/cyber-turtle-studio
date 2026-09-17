@@ -1,6 +1,6 @@
-"""Embedded Multi-threaded HTTP and REST API Server for Google Cyber Turtle Studio.
+"""Embedded Multi-threaded HTTP and REST API Server for Cyber Turtle Studio.
 
-Serves the Google Material 3 Studio web application and exposes high-performance
+Serves the Cyber Turtle Studio web application (design influenced by Material 3 tokens) and exposes high-performance
 REST APIs for executing Logo scripts, synthesizing L-System fractals, and exporting
 vector SVGs, CNC G-Code, and terminal ASCII art.
 """
@@ -46,7 +46,7 @@ EMBEDDED_HTML_FALLBACK = """<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Cyber Turtle Studio (Fallback)</title>
+  <title>Cyber Turtle Studio (Fallback)</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Google+Sans:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -65,7 +65,7 @@ EMBEDDED_HTML_FALLBACK = """<!DOCTYPE html>
 </head>
 <body>
   <div class="card">
-    <h1>🐢 Google Cyber Turtle Studio</h1>
+    <h1>🐢 Cyber Turtle Studio</h1>
     <p>Embedded server is operational. Public assets directory not found; serving fallback interface.</p>
     <textarea id="code">repeat 36 [ repeat 4 [ fd 100 rt 90 ] rt 10 ]</textarea>
     <button onclick="run()">Synthesize Logo</button>
@@ -185,7 +185,7 @@ class StudioHTTPRequestHandler(SimpleHTTPRequestHandler):
             stats = {
                 "status": "healthy",
                 "version": __version__,
-                "server": "Google Cyber Turtle Studio ThreadingHTTPServer",
+                "server": "Cyber Turtle Studio ThreadingHTTPServer",
                 "summary": get_catalog_summary(),
                 "platform": get_platform_info().__dict__,
             }
@@ -394,7 +394,7 @@ def start_server(
     open_browser: bool = False,
     auto_port: bool = True,
 ) -> None:
-    """Start the multi-threaded Google Cyber Turtle Studio UI server."""
+    """Start the multi-threaded Cyber Turtle Studio UI server (design influenced by Material 3 tokens)."""
     current_port = port
     max_attempts = 10 if auto_port else 1
     httpd: Optional[ThreadingHTTPServer] = None
@@ -412,7 +412,7 @@ def start_server(
         raise RuntimeError(f"Could not bind server to {host}:{port}-{current_port}")
 
     url = f"http://{host}:{current_port}/"
-    print(f"🚀 Google Cyber Turtle Studio running at: {url}")
+    print(f"🚀 Cyber Turtle Studio running at: {url}")
     print("   Press Ctrl+C to stop.")
 
     if open_browser:
@@ -431,7 +431,7 @@ def start_server(
 
 def main() -> None:
     """CLI entry point for running ui_server directly."""
-    parser = argparse.ArgumentParser(description="Google Cyber Turtle Studio UI Server")
+    parser = argparse.ArgumentParser(description="Cyber Turtle Studio UI Server")
     parser.add_argument("--host", default="127.0.0.1", help="Host address to bind (default: 127.0.0.1)")
     parser.add_argument("--port", type=int, default=8080, help="Port to listen on (default: 8080)")
     parser.add_argument("--no-browser", action="store_true", help="Do not open web browser automatically")

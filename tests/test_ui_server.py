@@ -1,4 +1,4 @@
-"""Tests for Google Cyber Turtle Studio Multi-threaded HTTP and REST API Server."""
+"""Tests for Cyber Turtle Studio Multi-threaded HTTP and REST API Server."""
 
 from __future__ import annotations
 
@@ -60,7 +60,7 @@ def test_ui_server_root_index(live_server: str):
     status, headers, body = _http_get(f"{live_server}/")
     assert status == 200
     assert "html" in headers.get("Content-Type", "").lower()
-    assert "Google Cyber Turtle Studio" in body or "<html" in body
+    assert "Cyber Turtle Studio" in body or "<html" in body
 
 
 def test_ui_server_presets_api(live_server: str):

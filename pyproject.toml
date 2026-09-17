@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "cyber-turtle-studio"
 version = "0.1.0"
-description = "High-precision Turtle graphics, L-System fractal synthesizer, CNC G-Code plotter, and Google Material 3 Studio."
+description = "High-precision Turtle graphics, L-System fractal synthesizer, CNC G-Code plotter, and Studio (design influenced by Material 3 tokens)."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }

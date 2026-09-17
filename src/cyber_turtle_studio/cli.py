@@ -963,7 +963,7 @@ def cmd_ascii(args: argparse.Namespace, styler: Styler) -> int:
 
 
 def cmd_serve(args: argparse.Namespace, styler: Styler) -> int:
-    """Launch the Google Material 3 Cyber Turtle Studio Web UI."""
+    """Launch the Cyber Turtle Studio Web UI (design influenced by Material 3 tokens)."""
     host = args.host
     port = args.port
     server_address = (host, port)
@@ -1197,7 +1197,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_asc.add_argument("-H", "--height", type=int, default=30, help="Grid character height")
 
     # 7. serve
-    p_srv = subparsers.add_parser("serve", help="Launch Google Material 3 Turtle Studio Web UI")
+    p_srv = subparsers.add_parser("serve", help="Launch Cyber Turtle Studio Web UI (Material 3 influenced)")
     p_srv.add_argument("-p", "--port", type=int, default=8080, help="HTTP port (default 8080)")
     p_srv.add_argument("-H", "--host", default="127.0.0.1", help="Bind host (default 127.0.0.1)")
     p_srv.add_argument("--browser", action="store_true", help="Open default web browser automatically")

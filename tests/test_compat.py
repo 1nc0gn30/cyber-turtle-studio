@@ -53,7 +53,7 @@ def test_safe_path_normalization(temp_dir: Path):
 def test_atomic_write_text_and_read(temp_dir: Path):
     """Verify atomic text writing and safe reading with fallbacks."""
     target_file = temp_dir / "subdir" / "test_file.txt"
-    content = "Hello Google Cyber Turtle Studio! 🐢⚡"
+    content = "Hello Cyber Turtle Studio! 🐢⚡"
 
     # Write text atomically (should auto-create parent directory)
     res_path = atomic_write_text(target_file, content)
