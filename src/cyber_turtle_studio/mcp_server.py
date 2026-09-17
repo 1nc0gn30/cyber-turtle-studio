@@ -46,6 +46,7 @@ from .exporters import (
     export_svg,
 )
 from .models import DrawingAST, LSystemConfig, LSystemRule, PatternPreset
+from .toolpath_optimizer import ToolpathOptimizer, render_toolpath_comparison_svg
 from .turtle_engine import LogoParser, TurtleEngine, execute_logo
 
 logger = logging.getLogger("cyber_turtle_mcp")
@@ -447,6 +448,41 @@ class MCPServer:
                     },
                 },
             },
+            {
+                "name": "turtle_optimize_toolpath",
+                "description": (
+                    "Optimize pen-plotter / CNC toolpaths by solving the Traveling Salesperson Problem (TSP) "
+                    "with 2-Opt local search to minimize non-drawing rapid pen-up air travel moves."
+                ),
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "script": {
+                            "type": "string",
+                            "description": "Logo script to execute and optimize.",
+                        },
+                        "preset": {
+                            "type": "string",
+                            "description": "Or preset pattern ID (e.g. 'sierpinski_triangle', 'dragon_curve').",
+                        },
+                        "draw_feedrate": {
+                            "type": "number",
+                            "default": 1200.0,
+                            "description": "Drawing feedrate in mm/min.",
+                        },
+                        "travel_feedrate": {
+                            "type": "number",
+                            "default": 3000.0,
+                            "description": "Rapid air travel feedrate in mm/min.",
+                        },
+                        "include_comparison_svg": {
+                            "type": "boolean",
+                            "default": True,
+                            "description": "Generate side-by-side SVG comparison highlighting air travel.",
+                        },
+                    },
+                },
+            },
         ]
 
     def get_resource_definitions(self) -> List[Dict[str, Any]]:
@@ -518,6 +554,8 @@ class MCPServer:
                 return self._tool_presets(args)
             elif name == "turtle_diagnostics":
                 return self._tool_diagnostics(args)
+            elif name == "turtle_optimize_toolpath":
+                return self._tool_optimize_toolpath(args)
             else:
                 return {
                     "content": [{"type": "text", "text": f"Error: Unknown tool name '{name}'."}],
@@ -796,6 +834,33 @@ class MCPServer:
 
         text = json.dumps(diag_data, indent=2)
         return {"content": [{"type": "text", "text": text}]}
+
+    def _tool_optimize_toolpath(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """Run toolpath optimization and return telemetry metrics and comparison SVG."""
+        script = str(args.get("script", "")).strip()
+        preset_id = str(args.get("preset", "")).strip()
+        draw_feed = float(args.get("draw_feedrate", 1200.0))
+        travel_feed = float(args.get("travel_feedrate", 3000.0))
+        include_svg = bool(args.get("include_comparison_svg", True))
+
+        if script:
+            ast = execute_logo(script)
+        elif preset_id:
+            ast = generate_pattern(preset_id)
+        else:
+            # Default star burst test pattern
+            ast = execute_logo("REPEAT 8 [ FD 50 PU HOME RT REPCOUNT * 45 PD ]")
+
+        optimizer = ToolpathOptimizer(draw_feedrate_mm_min=draw_feed, travel_feedrate_mm_min=travel_feed)
+        opt_ast, report = optimizer.optimize_toolpath(ast)
+
+        res_dict = report.to_dict()
+        if include_svg:
+            res_dict["comparison_svg"] = render_toolpath_comparison_svg(ast, opt_ast)
+
+        return {
+            "content": [{"type": "text", "text": json.dumps(res_dict, indent=2)}]
+        }
 
     def handle_resource_read(self, uri: str) -> Dict[str, Any]:
         """Read and return registered MCP resource content."""

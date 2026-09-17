@@ -39,6 +39,7 @@ from .exporters import (
 )
 from .lsystem_engine import generate_lsystem
 from .models import DrawingAST
+from .toolpath_optimizer import ToolpathOptimizer, render_toolpath_comparison_svg
 from .turtle_engine import execute_logo
 
 EMBEDDED_HTML_FALLBACK = """<!DOCTYPE html>
@@ -338,6 +339,24 @@ class StudioHTTPRequestHandler(SimpleHTTPRequestHandler):
                 height = int(req_data.get("height", 40))
                 ascii_text = export_ascii(ast, width=width, height=height)
                 self._send_json({"success": True, "ascii": ascii_text})
+
+            elif path == "/api/optimize-toolpath":
+                ast = self._extract_or_generate_ast(req_data)
+                draw_feed = float(req_data.get("draw_feedrate", 1200.0))
+                travel_feed = float(req_data.get("travel_feedrate", 3000.0))
+
+                optimizer = ToolpathOptimizer(draw_feedrate_mm_min=draw_feed, travel_feedrate_mm_min=travel_feed)
+                opt_ast, report = optimizer.optimize_toolpath(ast)
+
+                comp_svg = render_toolpath_comparison_svg(ast, opt_ast)
+                opt_gcode = export_gcode(opt_ast)
+
+                self._send_json({
+                    "success": True,
+                    "report": report.to_dict(),
+                    "comparison_svg": comp_svg,
+                    "optimized_gcode": opt_gcode,
+                })
 
             else:
                 self._send_error(404, f"API endpoint not found: {path}")

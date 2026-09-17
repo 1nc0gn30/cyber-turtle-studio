@@ -50,6 +50,7 @@ from .exporters import (
     export_svg,
 )
 from .models import DrawingAST, LSystemConfig, LSystemRule, PatternPreset
+from .toolpath_optimizer import ToolpathOptimizer, render_toolpath_comparison_svg
 from .turtle_engine import LogoParser, TurtleEngine, execute_logo
 
 __version__ = "0.1.0"
@@ -1117,6 +1118,45 @@ def cmd_test(args: argparse.Namespace, styler: Styler) -> int:
     return 0 if passed == len(test_cases) else 1
 
 
+def cmd_optimize(args: argparse.Namespace, styler: Styler) -> int:
+    """Optimize drawing toolpath rapid air travel with 2-Opt TSP."""
+    if args.script:
+        ast = execute_logo(args.script)
+    elif args.preset:
+        ast = generate_pattern(args.preset)
+    else:
+        # Default burst test pattern
+        ast = execute_logo("REPEAT 8 [ FD 50 PU HOME RT REPCOUNT * 45 PD ]")
+
+    opt = ToolpathOptimizer(
+        draw_feedrate_mm_min=args.draw_feed,
+        travel_feedrate_mm_min=args.travel_feed,
+    )
+    opt_ast, report = opt.optimize_toolpath(ast)
+
+    if args.svg:
+        svg_code = render_toolpath_comparison_svg(ast, opt_ast)
+        atomic_write_text(args.svg, svg_code)
+        if not args.quiet:
+            print(f"  {styler.green('✔ Exported Toolpath Comparison SVG:')} {args.svg}")
+
+    if args.json:
+        print(json.dumps(report.to_dict(), indent=2))
+        return 0
+
+    if not args.quiet:
+        print(f"\n{styler.bold(styler.cyan('⚡ Pen-Plotter Toolpath Optimization Report (2-Opt TSP)'))}\n")
+        print(f"  Polylines Chained       : {styler.bold(str(report.total_polylines))}")
+        print(f"  Drawing Distance        : {styler.cyan(f'{report.drawing_distance_mm:.1f} mm')}")
+        print(f"  Initial Air Travel      : {styler.red(f'{report.initial_air_travel_mm:.1f} mm')}")
+        print(f"  Optimized Air Travel    : {styler.green(f'{report.optimized_air_travel_mm:.1f} mm')}")
+        print(f"  Air Travel Reduction    : {styler.bold(styler.green(f'{report.reduction_percent:.1f}%'))}")
+        print(f"  Estimated Time (Init)   : {report.estimated_time_initial_sec:.1f}s")
+        print(f"  Estimated Time (Opt)    : {styler.green(f'{report.estimated_time_optimized_sec:.1f}s')}")
+        print(f"  Toolpath Efficiency     : {styler.bold(f'{report.efficiency_score:.1%}')}\n")
+    return 0
+
+
 # =============================================================================
 # CLI Main Parser Construction
 # =============================================================================
@@ -1212,6 +1252,15 @@ def build_parser() -> argparse.ArgumentParser:
     # 10. test
     subparsers.add_parser("test", help="Execute internal self-verification test runner")
 
+    # 11. optimize
+    p_opt = subparsers.add_parser("optimize", aliases=["toolpath", "tsp"], help="Optimize pen-plotter toolpath rapid air travel with 2-Opt TSP")
+    p_opt.add_argument("-s", "--script", help="Logo script code")
+    p_opt.add_argument("-p", "--preset", help="Catalog preset ID")
+    p_opt.add_argument("--draw-feed", type=float, default=1200.0, help="Drawing feedrate in mm/min")
+    p_opt.add_argument("--travel-feed", type=float, default=3000.0, help="Air travel feedrate in mm/min")
+    p_opt.add_argument("--svg", help="Output comparison SVG file path")
+    p_opt.add_argument("--json", action="store_true", help="Output telemetry as JSON")
+
     return parser
 
 
@@ -1250,6 +1299,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return cmd_diagnostics(args, styler)
     elif subcmd == "test":
         return cmd_test(args, styler)
+    elif subcmd in ("optimize", "toolpath", "tsp"):
+        return cmd_optimize(args, styler)
     else:
         parser.print_help()
         return 1

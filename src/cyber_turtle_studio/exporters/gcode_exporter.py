@@ -63,6 +63,7 @@ class GCodeConfig:
     precision_decimals: int = 3       # Floating point coordinate decimal precision
     home_on_start: bool = True        # Emit G28 homing command in preamble
     disable_motors_on_end: bool = True # Emit M84 in postamble
+    optimize_paths: bool = False       # Run 2-Opt TSP rapid travel minimizer on drawing
     custom_preamble: Optional[List[str]] = None
     custom_postamble: Optional[List[str]] = None
     feed_draw: Optional[float] = None
@@ -128,7 +129,16 @@ class GCodeExporter:
         dec = cfg.precision_decimals
         fmt = f"{{:.{dec}f}}"
 
-        processed_drawing, applied_scale = self._prepare_drawing(drawing)
+        target_drawing = drawing
+        if cfg.optimize_paths:
+            from cyber_turtle_studio.toolpath_optimizer import ToolpathOptimizer
+            opt = ToolpathOptimizer(
+                draw_feedrate_mm_min=cfg.draw_feedrate,
+                travel_feedrate_mm_min=cfg.travel_feedrate,
+            )
+            target_drawing, _ = opt.optimize_toolpath(drawing)
+
+        processed_drawing, applied_scale = self._prepare_drawing(target_drawing)
         lines: List[str] = []
 
         # Preamble / Header

@@ -79,6 +79,12 @@ from .spirograph import (
     generate_harmonograph,
     generate_spirograph,
 )
+from .toolpath_optimizer import (
+    Polyline,
+    ToolpathOptimizationReport,
+    ToolpathOptimizer,
+    render_toolpath_comparison_svg,
+)
 
 # Canonical class aliases
 Turtle = TurtleEngine
@@ -194,6 +200,11 @@ __all__ = [
     "ASCIIExporter",
     "export_ascii",
     "ASCIIRenderMode",
+    # Toolpath Optimizer
+    "ToolpathOptimizer",
+    "ToolpathOptimizationReport",
+    "Polyline",
+    "render_toolpath_comparison_svg",
     # Catalog & Preset Management
     "PRESETS",
     "GLOBAL_REGISTRY",
