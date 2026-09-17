@@ -75,6 +75,10 @@ from .turtle_engine import (
     TurtleEngine,
     execute_logo,
 )
+from .spirograph import (
+    generate_harmonograph,
+    generate_spirograph,
+)
 
 # Canonical class aliases
 Turtle = TurtleEngine
@@ -173,6 +177,8 @@ __all__ = [
     "generate_pattern",
     "expand_lsystem",
     "get_builtin_presets",
+    "generate_spirograph",
+    "generate_harmonograph",
     # Exporters
     "SVGExporter",
     "export_svg",
