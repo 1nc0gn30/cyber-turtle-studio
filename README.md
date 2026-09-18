@@ -175,6 +175,13 @@ cyber-turtle mcp
 
 # 9. System diagnostics report
 cyber-turtle doctor
+
+# 10. Procedural Truchet Tiling (arcs, diagonal, concentric_arcs, cross_line)
+cyber-turtle truchet -r 12 -c 12 -s 40 --style arcs --seed 42 -o truchet.svg --theme cyber_matrix
+
+# 11. Algorithmic Labyrinth Maze with BFS Path Solver
+cyber-turtle maze -r 15 -c 15 --algo recursive_backtracker --seed 1337 --solve -o maze.svg
+cyber-turtle maze -r 10 -c 10 --ascii
 ```
 
 ---
@@ -220,6 +227,8 @@ Add to `.cursor/mcp.json` or `.cline/mcp_settings.json`:
 - **Tools**:
   - `turtle_execute_logo`: Execute Logo code and return Drawing AST, statistics, and SVG.
   - `turtle_generate_lsystem`: Synthesize fractals from axiom, rules, iterations, and turning angle.
+  - `turtle_generate_truchet`: Procedural Truchet tiling generator with multiple aesthetic styles.
+  - `turtle_generate_maze`: Algorithmic labyrinth maze synthesizer with BFS solver.
   - `turtle_export_svg`: Generate vector SVG with animated CSS stroke effects.
   - `turtle_export_gcode`: Generate CNC pen-plotter or laser G-Code.
   - `turtle_presets`: Query catalog presets, categories, and parameters.
@@ -250,6 +259,8 @@ python3 -m cyber_turtle_studio.ui_server --port 8080
   - `POST /api/execute-logo`: Executes Logo code.
   - `POST /api/generate-lsystem`: Synthesizes L-System geometry.
   - `POST /api/generate-preset`: Generates preset drawing.
+  - `GET/POST /api/truchet`: Procedural Truchet tiling synthesis.
+  - `GET/POST /api/maze`: Algorithmic maze labyrinth generator with BFS solver.
   - `POST /api/export-svg`: Exports static or animated SVG.
   - `POST /api/export-gcode`: Exports CNC G-Code.
   - `GET /api/stats`: Diagnostics and system health.
@@ -268,6 +279,9 @@ pytest tests/ -v
 - `test_models.py`: `Point2D`, `BoundingBox`, `PathSegment`, `TurtleState`, `DrawingAST`, `LSystemConfig`.
 - `test_turtle_engine.py`: Movement, heading, pen styles, state stack, circles/dots, loops, procedures.
 - `test_lsystem_engine.py`: Deterministic & stochastic rewriting, fractal rendering, 28+ built-in presets.
+- `test_truchet_maze.py`: Truchet tilings (arcs/diagonal), maze algorithms (backtracker, Wilson, braided), BFS path solving, ASCII rendering.
+- `test_toolpath_optimizer.py`: Pen-plotter air travel optimization using 2-Opt TSP.
+- `test_spirograph.py`: Epitrochoid and hypotrochoid mathematical curve synthesis.
 - `test_exporters.py`: Vector SVG (static/animated), G-Code (plotter/laser), ASCII/Braille renderers.
 - `test_catalog.py`: Preset registry queries, fuzzy lookup, category filtering, dynamic registration.
 - `test_mcp_server.py`: JSON-RPC 2.0 lifecycle, tools, resources, and prompt templates.
@@ -294,6 +308,9 @@ cyber-turtle-studio/
 │       ├── lsystem_engine.py      # L-System string rewriter & turtle interpreter
 │       ├── mcp_server.py          # Model Context Protocol stdio server
 │       ├── models.py              # Geometry AST, Point2D, BoundingBox models
+│       ├── spirograph.py          # Spirograph epitrochoid & hypotrochoid engine
+│       ├── toolpath_optimizer.py  # 2-Opt TSP pen-plotter travel path optimizer
+│       ├── truchet_maze.py        # Truchet tilings & algorithmic maze synthesizer
 │       ├── turtle_engine.py       # High-precision Turtle interpreter & Logo parser
 │       ├── ui_server.py           # Multi-threaded HTTP REST API server
 │       └── exporters/
@@ -310,6 +327,9 @@ cyber-turtle-studio/
 │   ├── test_lsystem_engine.py     # L-System synthesis tests
 │   ├── test_mcp_server.py         # MCP server tests
 │   ├── test_models.py             # Data models & geometry tests
+│   ├── test_spirograph.py         # Spirograph tests
+│   ├── test_toolpath_optimizer.py # Toolpath optimizer tests
+│   ├── test_truchet_maze.py       # Truchet & maze labyrinth tests
 │   ├── test_turtle_engine.py      # Turtle engine & Logo parser tests
 │   └── test_ui_server.py          # UI & REST API server tests
 ├── pyproject.toml                 # Modern PEP 621 packaging metadata

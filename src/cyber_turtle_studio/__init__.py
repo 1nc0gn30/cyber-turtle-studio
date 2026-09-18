@@ -85,6 +85,13 @@ from .toolpath_optimizer import (
     ToolpathOptimizer,
     render_toolpath_comparison_svg,
 )
+from .truchet_maze import (
+    MazeAlgorithm,
+    TruchetStyle,
+    generate_maze_labyrinth,
+    generate_truchet_tiling,
+    render_ascii_maze,
+)
 
 # Canonical class aliases
 Turtle = TurtleEngine
@@ -185,6 +192,11 @@ __all__ = [
     "get_builtin_presets",
     "generate_spirograph",
     "generate_harmonograph",
+    "TruchetStyle",
+    "MazeAlgorithm",
+    "generate_truchet_tiling",
+    "generate_maze_labyrinth",
+    "render_ascii_maze",
     # Exporters
     "SVGExporter",
     "export_svg",

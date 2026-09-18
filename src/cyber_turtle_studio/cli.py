@@ -51,6 +51,13 @@ from .exporters import (
 )
 from .models import DrawingAST, LSystemConfig, LSystemRule, PatternPreset
 from .toolpath_optimizer import ToolpathOptimizer, render_toolpath_comparison_svg
+from .truchet_maze import (
+    MazeAlgorithm,
+    TruchetStyle,
+    generate_maze_labyrinth,
+    generate_truchet_tiling,
+    render_ascii_maze,
+)
 from .turtle_engine import LogoParser, TurtleEngine, execute_logo
 
 __version__ = "0.1.0"
@@ -1157,6 +1164,118 @@ def cmd_optimize(args: argparse.Namespace, styler: Styler) -> int:
     return 0
 
 
+def cmd_truchet(args: argparse.Namespace, styler: Styler) -> int:
+    """Procedurally generate Truchet tiling patterns."""
+    try:
+        ast, stats = generate_truchet_tiling(
+            rows=args.rows,
+            cols=args.cols,
+            tile_size=args.tile_size,
+            style=args.style,
+            seed=args.seed,
+            stroke_width=args.stroke_width,
+        )
+    except Exception as exc:
+        print(styler.red(f"Error: {str(exc)}"), file=sys.stderr)
+        return 1
+
+    out_format = (args.format or "svg").lower()
+
+    if not args.quiet and out_format != "json":
+        print(styler.header(f"Truchet Tiling: {args.style} ({args.rows}x{args.cols})"))
+        seg_cnt = stats["total_segments"]
+        tot_tiles = stats["total_tiles"]
+        r_val = stats["rows"]
+        c_val = stats["cols"]
+        bw = stats["bounds"]["width"]
+        bh = stats["bounds"]["height"]
+        print(f"  {styler.badge('TILES', f'{tot_tiles} tiles ({r_val} rows x {c_val} cols)')}")
+        print(f"  {styler.badge('STATS', f'Segments: {seg_cnt} | Dimensions: {bw}x{bh}px')}")
+
+    if args.output:
+        out_path = safe_path(args.output)
+        if out_format == "svg" or out_path.suffix.lower() == ".svg":
+            export_svg(ast, theme=args.theme, animated=args.animate, stroke_width=args.stroke_width, file_path=out_path)
+            if not args.quiet:
+                print(styler.green(f"  ✔ Exported Truchet SVG -> {out_path}"))
+        elif out_format == "gcode":
+            export_gcode(ast, file_path=out_path)
+            if not args.quiet:
+                print(styler.green(f"  ✔ Exported Truchet G-Code -> {out_path}"))
+        elif out_format == "ascii":
+            export_ascii(ast, file_path=out_path)
+            if not args.quiet:
+                print(styler.green(f"  ✔ Exported Truchet ASCII -> {out_path}"))
+        elif out_format == "json":
+            atomic_write_text(out_path, json.dumps(stats, indent=2))
+            if not args.quiet:
+                print(styler.green(f"  ✔ Exported Truchet Metadata JSON -> {out_path}"))
+    else:
+        if out_format == "json":
+            print(json.dumps(stats, indent=2))
+        elif out_format == "ascii":
+            print(export_ascii(ast, width=60, height=30, mode="braille"))
+        else:
+            print("\n" + export_ascii(ast, width=54, height=24, mode="braille"))
+            if not args.quiet:
+                print(styler.dim("  (Use --output <file.svg> to save full vector markup)"))
+    return 0
+
+
+def cmd_maze(args: argparse.Namespace, styler: Styler) -> int:
+    """Algorithmic labyrinth maze generator with BFS path solver."""
+    try:
+        ast, meta = generate_maze_labyrinth(
+            rows=args.rows,
+            cols=args.cols,
+            cell_size=args.cell_size,
+            algorithm=args.algo,
+            seed=args.seed,
+            solve=args.solve,
+        )
+    except Exception as exc:
+        print(styler.red(f"Error: {str(exc)}"), file=sys.stderr)
+        return 1
+
+    if args.ascii or args.format == "ascii":
+        print(render_ascii_maze(meta))
+        return 0
+
+    out_format = (args.format or "svg").lower()
+
+    if not args.quiet and out_format != "json":
+        print(styler.header(f"Algorithmic Maze: {meta['algorithm']} ({args.rows}x{args.cols})"))
+        w_segs = meta["wall_segments_count"]
+        print(f"  {styler.badge('MAZE', f'{args.rows}x{args.cols} cells | Wall Segments: {w_segs}')}")
+        if meta.get("solved"):
+            sol_len = meta["solution_length"]
+            print(f"  {styler.badge('SOLVED', styler.green(f'Solution Path Length: {sol_len} steps'))}")
+
+    out_format = (args.format or "svg").lower()
+    if args.output:
+        out_path = safe_path(args.output)
+        if out_format == "svg" or out_path.suffix.lower() == ".svg":
+            export_svg(ast, theme=args.theme, animated=args.animate, stroke_width=max(1.0, args.cell_size * 0.1), file_path=out_path)
+            if not args.quiet:
+                print(styler.green(f"  ✔ Exported Maze SVG -> {out_path}"))
+        elif out_format == "gcode":
+            export_gcode(ast, file_path=out_path)
+            if not args.quiet:
+                print(styler.green(f"  ✔ Exported Maze G-Code -> {out_path}"))
+        elif out_format == "json":
+            atomic_write_text(out_path, json.dumps(meta, indent=2))
+            if not args.quiet:
+                print(styler.green(f"  ✔ Exported Maze Metadata JSON -> {out_path}"))
+    else:
+        if out_format == "json":
+            print(json.dumps(meta, indent=2))
+        else:
+            print(render_ascii_maze(meta))
+            if not args.quiet:
+                print(styler.dim("  (Use --output <file.svg> to save full vector markup)"))
+    return 0
+
+
 # =============================================================================
 # CLI Main Parser Construction
 # =============================================================================
@@ -1261,6 +1380,33 @@ def build_parser() -> argparse.ArgumentParser:
     p_opt.add_argument("--svg", help="Output comparison SVG file path")
     p_opt.add_argument("--json", action="store_true", help="Output telemetry as JSON")
 
+    # 12. truchet
+    p_truchet = subparsers.add_parser("truchet", help="Procedural Truchet tiling pattern generator")
+    p_truchet.add_argument("-r", "--rows", type=int, default=10, help="Number of rows")
+    p_truchet.add_argument("-c", "--cols", type=int, default=10, help="Number of columns")
+    p_truchet.add_argument("-s", "--tile-size", type=float, default=40.0, help="Tile size in pixels")
+    p_truchet.add_argument("--style", choices=["arcs", "diagonal", "concentric_arcs", "cross_line"], default="arcs", help="Truchet pattern style")
+    p_truchet.add_argument("--seed", type=int, default=None, help="PRNG seed for deterministic output")
+    p_truchet.add_argument("-o", "--output", help="Target output file path")
+    p_truchet.add_argument("-f", "--format", choices=["svg", "gcode", "ascii", "json"], default="svg", help="Output format")
+    p_truchet.add_argument("-t", "--theme", default="cyber_matrix", help="Visual theme palette")
+    p_truchet.add_argument("--stroke-width", type=float, default=2.0, help="Stroke width in pixels")
+    p_truchet.add_argument("-a", "--animate", action="store_true", help="Enable CSS stroke animation in SVG")
+
+    # 13. maze
+    p_maze = subparsers.add_parser("maze", help="Algorithmic labyrinth maze generator with BFS path solver")
+    p_maze.add_argument("-r", "--rows", type=int, default=15, help="Number of maze rows")
+    p_maze.add_argument("-c", "--cols", type=int, default=15, help="Number of maze columns")
+    p_maze.add_argument("-s", "--cell-size", type=float, default=25.0, help="Maze cell size in pixels")
+    p_maze.add_argument("--algo", choices=["recursive_backtracker", "wilson", "braided"], default="recursive_backtracker", help="Maze generation algorithm")
+    p_maze.add_argument("--seed", type=int, default=None, help="PRNG seed for deterministic layout")
+    p_maze.add_argument("--solve", action="store_true", help="Solve maze using BFS and overlay path")
+    p_maze.add_argument("-o", "--output", help="Target output file path")
+    p_maze.add_argument("-f", "--format", choices=["svg", "gcode", "ascii", "json"], default="svg", help="Output format")
+    p_maze.add_argument("-t", "--theme", default="cyber_matrix", help="Visual theme palette")
+    p_maze.add_argument("--ascii", action="store_true", help="Render ASCII terminal maze")
+    p_maze.add_argument("-a", "--animate", action="store_true", help="Enable CSS stroke animation in SVG")
+
     return parser
 
 
@@ -1301,6 +1447,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return cmd_test(args, styler)
     elif subcmd in ("optimize", "toolpath", "tsp"):
         return cmd_optimize(args, styler)
+    elif subcmd == "truchet":
+        return cmd_truchet(args, styler)
+    elif subcmd == "maze":
+        return cmd_maze(args, styler)
     else:
         parser.print_help()
         return 1

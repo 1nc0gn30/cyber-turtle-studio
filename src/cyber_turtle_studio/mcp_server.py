@@ -483,6 +483,49 @@ class MCPServer:
                     },
                 },
             },
+            {
+                "name": "turtle_generate_truchet",
+                "description": "Generate generative Truchet tiling vector patterns (Smith quarter-circle arcs, diagonal slashes, concentric ribbons) for SVG and pen plotting.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "rows": {"type": "integer", "default": 10, "description": "Number of tile rows."},
+                        "cols": {"type": "integer", "default": 10, "description": "Number of tile columns."},
+                        "tile_size": {"type": "number", "default": 40.0, "description": "Tile dimension size."},
+                        "style": {
+                            "type": "string",
+                            "enum": ["arcs", "diagonal", "concentric_arcs", "cross_line"],
+                            "default": "arcs",
+                            "description": "Truchet tiling variation.",
+                        },
+                        "seed": {"type": "integer", "description": "Optional RNG seed for deterministic generation."},
+                        "theme": {"type": "string", "default": "cyber_matrix", "description": "Color theme for SVG rendering."},
+                        "stroke_width": {"type": "number", "default": 2.0, "description": "Vector stroke width."},
+                    },
+                },
+            },
+            {
+                "name": "turtle_generate_maze",
+                "description": "Generate algorithmic labyrinth mazes (Recursive Backtracker, Wilson uniform spanning tree, or Braided) with optional solved pathfinding trail.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "rows": {"type": "integer", "default": 12, "description": "Number of maze rows."},
+                        "cols": {"type": "integer", "default": 12, "description": "Number of maze columns."},
+                        "cell_size": {"type": "number", "default": 30.0, "description": "Cell dimension in canvas units."},
+                        "algorithm": {
+                            "type": "string",
+                            "enum": ["backtracker", "wilson", "braided"],
+                            "default": "backtracker",
+                            "description": "Maze generation algorithm.",
+                        },
+                        "solve": {"type": "boolean", "default": True, "description": "Whether to draw the solved route."},
+                        "seed": {"type": "integer", "description": "Optional RNG seed for reproducibility."},
+                        "wall_color": {"type": "string", "default": "#00e5ff", "description": "Hex color for maze walls."},
+                        "path_color": {"type": "string", "default": "#ff007f", "description": "Hex color for solved route."},
+                    },
+                },
+            },
         ]
 
     def get_resource_definitions(self) -> List[Dict[str, Any]]:
@@ -556,6 +599,10 @@ class MCPServer:
                 return self._tool_diagnostics(args)
             elif name == "turtle_optimize_toolpath":
                 return self._tool_optimize_toolpath(args)
+            elif name == "turtle_generate_truchet":
+                return self._tool_generate_truchet(args)
+            elif name == "turtle_generate_maze":
+                return self._tool_generate_maze(args)
             else:
                 return {
                     "content": [{"type": "text", "text": f"Error: Unknown tool name '{name}'."}],
@@ -861,6 +908,91 @@ class MCPServer:
         return {
             "content": [{"type": "text", "text": json.dumps(res_dict, indent=2)}]
         }
+
+    def _tool_generate_truchet(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        from .truchet_maze import TruchetStyle, generate_truchet_tiling
+        rows = int(args.get("rows", 10))
+        cols = int(args.get("cols", 10))
+        tile_size = float(args.get("tile_size", 40.0))
+        style_str = str(args.get("style", "arcs")).lower()
+        seed = args.get("seed")
+        theme = str(args.get("theme", "cyber_matrix"))
+        stroke_width = float(args.get("stroke_width", 2.0))
+
+        try:
+            style = TruchetStyle(style_str)
+        except ValueError:
+            style = TruchetStyle.ARCS
+
+        ast, stats_meta = generate_truchet_tiling(
+            rows=rows,
+            cols=cols,
+            tile_size=tile_size,
+            style=style,
+            seed=int(seed) if seed is not None else None,
+            stroke_width=stroke_width,
+        )
+        svg_str = export_svg(ast, theme=theme)
+        stats = ast.stats()
+        draw_len = stats.get("total_draw_length", stats.get("total_drawing_length", 0.0))
+
+        res_data = {
+            "success": True,
+            "style": style.value,
+            "rows": rows,
+            "cols": cols,
+            "total_segments": stats["total_segments"],
+            "total_draw_length": draw_len,
+            "stats": stats_meta,
+            "svg": svg_str,
+        }
+        return {"content": [{"type": "text", "text": json.dumps(res_data, indent=2)}], "isError": False}
+
+    def _tool_generate_maze(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        from .truchet_maze import MazeAlgorithm, generate_maze_labyrinth, render_ascii_maze
+        rows = int(args.get("rows", 12))
+        cols = int(args.get("cols", 12))
+        cell_size = float(args.get("cell_size", 30.0))
+        algo_str = str(args.get("algorithm", "backtracker")).lower()
+        solve = bool(args.get("solve", True))
+        seed = args.get("seed")
+        wall_color = str(args.get("wall_color", "#00e5ff"))
+        path_color = str(args.get("path_color", "#ff007f"))
+
+        try:
+            algo = MazeAlgorithm(algo_str)
+        except ValueError:
+            algo = MazeAlgorithm.RECURSIVE_BACKTRACKER
+
+        ast, meta = generate_maze_labyrinth(
+            rows=rows,
+            cols=cols,
+            cell_size=cell_size,
+            algorithm=algo,
+            solve=solve,
+            seed=int(seed) if seed is not None else None,
+            wall_color=wall_color,
+            path_color=path_color,
+        )
+        svg_str = export_svg(ast, theme="cyber_matrix")
+        ascii_art = render_ascii_maze(meta)
+        stats = ast.stats()
+        draw_len = stats.get("total_draw_length", stats.get("total_drawing_length", 0.0))
+
+        res_data = {
+            "success": True,
+            "algorithm": algo.value,
+            "rows": rows,
+            "cols": cols,
+            "solved": meta["solved"],
+            "solution_length": meta["solution_length"],
+            "wall_segments_count": meta["wall_segments_count"],
+            "total_draw_length": draw_len,
+            "meta": meta,
+            "svg": svg_str,
+            "ascii": ascii_art,
+        }
+        return {"content": [{"type": "text", "text": json.dumps(res_data, indent=2)}], "isError": False}
 
     def handle_resource_read(self, uri: str) -> Dict[str, Any]:
         """Read and return registered MCP resource content."""

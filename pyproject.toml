@@ -22,6 +22,12 @@ keywords = [
     "mcp",
     "material-design",
     "math-art",
+    "truchet",
+    "truchet-tiles",
+    "labyrinths",
+    "generative-mazes",
+    "pen-plotter-art",
+    "generative-art",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",

@@ -40,6 +40,13 @@ from .exporters import (
 from .lsystem_engine import generate_lsystem
 from .models import DrawingAST
 from .toolpath_optimizer import ToolpathOptimizer, render_toolpath_comparison_svg
+from .truchet_maze import (
+    MazeAlgorithm,
+    TruchetStyle,
+    generate_maze_labyrinth,
+    generate_truchet_tiling,
+    render_ascii_maze,
+)
 from .turtle_engine import execute_logo
 
 EMBEDDED_HTML_FALLBACK = """<!DOCTYPE html>
@@ -191,6 +198,74 @@ class StudioHTTPRequestHandler(SimpleHTTPRequestHandler):
                 "platform": get_platform_info().__dict__,
             }
             self._send_json(stats)
+            return
+
+        elif path == "/api/truchet":
+            rows = int(query_params.get("rows", [10])[0])
+            cols = int(query_params.get("cols", [10])[0])
+            tile_size = float(query_params.get("tile_size", [40.0])[0])
+            style = query_params.get("style", ["arcs"])[0]
+            seed_val = query_params.get("seed", [None])[0]
+            seed = int(seed_val) if seed_val is not None else None
+            theme = query_params.get("theme", ["cyber_matrix"])[0]
+            animate = query_params.get("animate", ["false"])[0].lower() in ("true", "1", "yes")
+
+            ast, stats = generate_truchet_tiling(
+                rows=rows,
+                cols=cols,
+                tile_size=tile_size,
+                style=style,
+                seed=seed,
+            )
+            svg_str = export_svg(ast, theme=theme, animate=animate)
+            gcode_str = export_gcode(ast)
+
+            self._send_json({
+                "success": True,
+                "style": style,
+                "rows": rows,
+                "cols": cols,
+                "stats": stats,
+                "svg": svg_str,
+                "gcode": gcode_str,
+            })
+            return
+
+        elif path == "/api/maze":
+            rows = int(query_params.get("rows", [15])[0])
+            cols = int(query_params.get("cols", [15])[0])
+            cell_size = float(query_params.get("cell_size", [25.0])[0])
+            algo = query_params.get("algo", query_params.get("algorithm", ["recursive_backtracker"]))[0]
+            seed_val = query_params.get("seed", [None])[0]
+            seed = int(seed_val) if seed_val is not None else None
+            solve = query_params.get("solve", ["false"])[0].lower() in ("true", "1", "yes")
+            theme = query_params.get("theme", ["cyber_matrix"])[0]
+            animate = query_params.get("animate", ["false"])[0].lower() in ("true", "1", "yes")
+
+            ast, meta = generate_maze_labyrinth(
+                rows=rows,
+                cols=cols,
+                cell_size=cell_size,
+                algorithm=algo,
+                seed=seed,
+                solve=solve,
+            )
+            svg_str = export_svg(ast, theme=theme, animate=animate)
+            gcode_str = export_gcode(ast)
+            ascii_str = render_ascii_maze(meta)
+
+            self._send_json({
+                "success": True,
+                "algorithm": algo,
+                "rows": rows,
+                "cols": cols,
+                "solved": solve,
+                "solution_length": meta.get("solution_length", 0),
+                "meta": meta,
+                "svg": svg_str,
+                "gcode": gcode_str,
+                "ascii": ascii_str,
+            })
             return
 
         # Fallback to standard static file server
@@ -358,6 +433,70 @@ class StudioHTTPRequestHandler(SimpleHTTPRequestHandler):
                     "optimized_gcode": opt_gcode,
                 })
 
+            elif path == "/api/truchet":
+                rows = int(req_data.get("rows", 10))
+                cols = int(req_data.get("cols", 10))
+                tile_size = float(req_data.get("tile_size", 40.0))
+                style = req_data.get("style", "arcs")
+                seed = req_data.get("seed")
+                theme = req_data.get("theme", "cyber_matrix")
+                animate = bool(req_data.get("animate", False))
+
+                ast, stats = generate_truchet_tiling(
+                    rows=rows,
+                    cols=cols,
+                    tile_size=tile_size,
+                    style=style,
+                    seed=seed,
+                )
+                svg_str = export_svg(ast, theme=theme, animate=animate)
+                gcode_str = export_gcode(ast)
+
+                self._send_json({
+                    "success": True,
+                    "style": style,
+                    "rows": rows,
+                    "cols": cols,
+                    "stats": stats,
+                    "svg": svg_str,
+                    "gcode": gcode_str,
+                })
+
+            elif path == "/api/maze":
+                rows = int(req_data.get("rows", 15))
+                cols = int(req_data.get("cols", 15))
+                cell_size = float(req_data.get("cell_size", 25.0))
+                algo = req_data.get("algorithm", req_data.get("algo", "recursive_backtracker"))
+                seed = req_data.get("seed")
+                solve = bool(req_data.get("solve", False))
+                theme = req_data.get("theme", "cyber_matrix")
+                animate = bool(req_data.get("animate", False))
+
+                ast, meta = generate_maze_labyrinth(
+                    rows=rows,
+                    cols=cols,
+                    cell_size=cell_size,
+                    algorithm=algo,
+                    seed=seed,
+                    solve=solve,
+                )
+                svg_str = export_svg(ast, theme=theme, animate=animate)
+                gcode_str = export_gcode(ast)
+                ascii_str = render_ascii_maze(meta)
+
+                self._send_json({
+                    "success": True,
+                    "algorithm": algo,
+                    "rows": rows,
+                    "cols": cols,
+                    "solved": solve,
+                    "solution_length": meta.get("solution_length", 0),
+                    "meta": meta,
+                    "svg": svg_str,
+                    "gcode": gcode_str,
+                    "ascii": ascii_str,
+                })
+
             else:
                 self._send_error(404, f"API endpoint not found: {path}")
 
@@ -368,6 +507,12 @@ class StudioHTTPRequestHandler(SimpleHTTPRequestHandler):
         """Helper to resolve a DrawingAST from payload or preset."""
         if "ast" in data and isinstance(data["ast"], dict):
             return DrawingAST.from_dict(data["ast"])
+        if "truchet" in data and isinstance(data["truchet"], dict):
+            ast, _ = generate_truchet_tiling(**data["truchet"])
+            return ast
+        if "maze" in data and isinstance(data["maze"], dict):
+            ast, _ = generate_maze_labyrinth(**data["maze"])
+            return ast
         if "preset_id" in data:
             return generate_pattern(data["preset_id"])
         if "script" in data:
