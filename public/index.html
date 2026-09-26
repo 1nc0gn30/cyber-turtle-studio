@@ -10,10 +10,10 @@
   <style>
     :root {
       /* Material 3 Light Theme Tokens (Design influenced by Material 3) */
-      --md-primary: #1a73e8;
+      --md-primary: #B8860B;
       --md-on-primary: #ffffff;
-      --md-primary-container: #d2e3fc;
-      --md-on-primary-container: #174ea6;
+      --md-primary-container: #F5E6AB;
+      --md-on-primary-container: #6B5308;
       --md-secondary: #5f6368;
       --md-surface: #ffffff;
       --md-surface-variant: #f1f3f4;
@@ -39,10 +39,10 @@
     }
 
     [data-theme="dark"] {
-      --md-primary: #8ab4f8;
+      --md-primary: #D4AF37;
       --md-on-primary: #202124;
-      --md-primary-container: #174ea6;
-      --md-on-primary-container: #d2e3fc;
+      --md-primary-container: #6B5308;
+      --md-on-primary-container: #F5E6AB;
       --md-secondary: #9aa0a6;
       --md-surface: #202124;
       --md-surface-variant: #303134;
@@ -95,7 +95,7 @@
     .brand-logo {
       width: 36px;
       height: 36px;
-      background: linear-gradient(135deg, #1a73e8, #34a853);
+      background: linear-gradient(135deg, #B8860B, #34a853);
       border-radius: 10px;
       display: flex;
       align-items: center;
@@ -440,7 +440,7 @@
       background: rgba(255, 255, 255, 0.18);
     }
     .theme-chip.active {
-      background: #1a73e8;
+      background: #B8860B;
       color: #ffffff;
       border-color: #4285f4;
       box-shadow: 0 0 12px rgba(66, 133, 244, 0.5);
@@ -700,6 +700,7 @@
       background: transparent;
     }
   </style>
+  <link rel="stylesheet" href="atelier.css">
 </head>
 <body>
 
@@ -857,7 +858,7 @@ repeat 36 [
       <div class="viewport-toolbar">
         <!-- Viewport Theme Selector -->
         <div class="theme-selector-chips">
-          <span style="font-size: 11px; color: #8ab4f8; font-weight: 600; margin-right: 4px;">THEME:</span>
+          <span style="font-size: 11px; color: #D4AF37; font-weight: 600; margin-right: 4px;">THEME:</span>
           <span class="theme-chip active" onclick="setSvgTheme('cyber_matrix')">Matrix</span>
           <span class="theme-chip" onclick="setSvgTheme('retro_amber')">Amber CRT</span>
           <span class="theme-chip" onclick="setSvgTheme('blueprint_cyan')">Blueprint</span>

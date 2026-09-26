@@ -1,0 +1,53 @@
+@font-face {
+  font-family: "Celtic Garamond";
+  src: url("fonts/CelticGaramond.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --md-primary: #B8860B;
+  --md-on-primary: #101828;
+  --md-primary-container: #FEF9E7;
+  --md-on-primary-container: #6B5308;
+  --md-surface: #FFFFFF;
+  --md-surface-card: #FFFFFF;
+  --md-on-surface: #101828;
+  --md-on-surface-variant: #475467;
+  --md-outline: #EAECF0;
+  --g-blue: #B8860B;
+  --g-blue-dark: #8A6A09;
+  --g-blue-light: #FEF9E7;
+  --google-blue: #B8860B;
+  --google-blue-hover: #8A6A09;
+  --google-blue-light: #FEF9E7;
+  --md-sys-color-primary: #B8860B;
+  --md-sys-color-on-primary: #101828;
+  --md-sys-color-primary-container: #FEF9E7;
+  --md-sys-color-on-primary-container: #6B5308;
+  --md-sys-color-surface: #F7F6F2;
+  --md-sys-color-surface-dim: #F7F6F2;
+  --md-sys-color-surface-container: #FFFFFF;
+  --md-sys-color-surface-container-low: #F7F6F2;
+  --md-sys-color-surface-container-high: #FFFFFF;
+  --md-sys-color-surface-container-highest: #FEF9E7;
+  --md-sys-color-on-surface: #101828;
+  --md-sys-color-on-surface-variant: #475467;
+  --md-sys-color-outline: #EAECF0;
+  --md-sys-color-outline-variant: #EAECF0;
+  --font-google: "Inter", "Segoe UI", sans-serif;
+  --font-sans: "Inter", "Segoe UI", sans-serif;
+  --font-family: "Inter", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
+}
+
+h1, h2, h3, header .brand-title, .brand h1 {
+  font-family: "Celtic Garamond", Georgia, serif !important;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+button, .btn, .md-button {
+  border-radius: 999px;
+}
