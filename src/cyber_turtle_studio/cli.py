@@ -1357,7 +1357,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     # 7. serve
     p_srv = subparsers.add_parser("serve", help="Launch Cyber Turtle Studio Web UI (Material 3 influenced)")
-    p_srv.add_argument("-p", "--port", type=int, default=8080, help="HTTP port (default 8080)")
+    p_srv.add_argument("-p", "--port", type=int, default=8085, help="HTTP port (default 8085)")
     p_srv.add_argument("-H", "--host", default="127.0.0.1", help="Bind host (default 127.0.0.1)")
     p_srv.add_argument("--browser", action="store_true", help="Open default web browser automatically")
 

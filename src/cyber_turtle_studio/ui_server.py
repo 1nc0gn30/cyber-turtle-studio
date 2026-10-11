@@ -546,7 +546,7 @@ class StudioHTTPRequestHandler(SimpleHTTPRequestHandler):
             super().log_message(format, *args)
 
 
-def create_server(host: str = "127.0.0.1", port: int = 8080) -> ThreadingHTTPServer:
+def create_server(host: str = "127.0.0.1", port: int = 8085) -> ThreadingHTTPServer:
     """Create and return configured ThreadingHTTPServer instance."""
     server_addr = (host, port)
     return ThreadingHTTPServer(server_addr, StudioHTTPRequestHandler)
@@ -554,7 +554,7 @@ def create_server(host: str = "127.0.0.1", port: int = 8080) -> ThreadingHTTPSer
 
 def start_server(
     host: str = "127.0.0.1",
-    port: int = 8080,
+    port: int = 8085,
     open_browser: bool = False,
     auto_port: bool = True,
 ) -> None:
@@ -597,7 +597,7 @@ def main() -> None:
     """CLI entry point for running ui_server directly."""
     parser = argparse.ArgumentParser(description="Cyber Turtle Studio UI Server")
     parser.add_argument("--host", default="127.0.0.1", help="Host address to bind (default: 127.0.0.1)")
-    parser.add_argument("--port", type=int, default=8080, help="Port to listen on (default: 8080)")
+    parser.add_argument("--port", type=int, default=8085, help="Port to listen on (default: 8085)")
     parser.add_argument("--no-browser", action="store_true", help="Do not open web browser automatically")
     args = parser.parse_args()
 

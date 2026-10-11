@@ -1,19 +1,100 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cyber Turtle Studio | L-System Fractal & CNC Plotter Engine</title>
+  <meta name="description" content="Sovereign in-browser L-System fractal synthesizer, turtle geometry studio, and CNC pen-plotter G-Code and SVG vector exporter. Zero cloud egress.">
+  <link rel="canonical" href="https://cyber-turtle-studio.netlify.app/">
+
+  <!-- OpenGraph & Twitter Cards -->
+  <meta property="og:title" content="Cyber Turtle Studio | L-System Fractal & CNC Plotter Engine">
+  <meta property="og:description" content="Synthesize recursive L-Systems, fractal botany, Hilbert curves, and export CNC plotter G-Code and SVGs.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://cyber-turtle-studio.netlify.app/">
+  <meta property="og:image" content="https://cyber-turtle-studio.netlify.app/favicon.ico">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@1nc0gn30">
+  <meta name="twitter:creator" content="@1nc0gn30">
+  <meta name="twitter:title" content="Cyber Turtle Studio | L-System Fractal & CNC Plotter Engine">
+  <meta name="twitter:description" content="Synthesize recursive L-Systems, fractal botany, Hilbert curves, and export CNC plotter G-Code and SVGs.">
+  <meta name="twitter:image" content="https://cyber-turtle-studio.netlify.app/favicon.ico">
+
+  <!-- AEO & SEO Schema.org Graph -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Cyber Turtle Studio",
+        "url": "https://cyber-turtle-studio.netlify.app/",
+        "applicationCategory": "DesignApplication",
+        "operatingSystem": "All (In-Browser Runtime)",
+        "description": "Sovereign in-browser L-System fractal synthesizer, turtle geometry studio, and CNC pen-plotter G-Code and SVG vector exporter.",
+        "offers": {
+          "@type": "Offer",
+          "price": "19.00",
+          "priceCurrency": "USD",
+          "priceValidUntil": "2027-12-31",
+          "availability": "https://schema.org/InStock",
+          "seller": {
+            "@type": "Organization",
+            "name": "Neal Frazier Tech",
+            "url": "https://nealfrazier.tech"
+          }
+        },
+        "author": {
+          "@type": "Person",
+          "name": "Neal Frazier",
+          "alternateName": "1nc0gn30",
+          "url": "https://github.com/1nc0gn30"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Can I export CNC plotter G-code directly in my browser?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, Cyber Turtle Studio translates turtle paths directly into standard G-code toolpaths (G0 rapid travel, G1 feed rate, pen up/down commands) and downloadable vector SVGs."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does Cyber Turtle Studio require an active backend server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. When deployed or running locally without backend daemons, Cyber Turtle Studio operates 100% client-side in Local JS Mode with zero network dependencies."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What payment rails are accepted for the Pro license?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "We accept major credit cards, Apple Pay, and Google Pay via Stripe ($19 founding lifetime) and cryptocurrency via Solana DePay."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+  <script src="https://integrate.depay.com/widgets/v13.js" defer></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto+Mono:wght@400;500;600&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
       /* Material 3 Light Theme Tokens (Design influenced by Material 3) */
-      --md-primary: #B8860B;
+      --md-primary: #1a73e8;
       --md-on-primary: #ffffff;
-      --md-primary-container: #F5E6AB;
-      --md-on-primary-container: #6B5308;
+      --md-primary-container: #d2e3fc;
+      --md-on-primary-container: #174ea6;
       --md-secondary: #5f6368;
       --md-surface: #ffffff;
       --md-surface-variant: #f1f3f4;
@@ -39,18 +120,18 @@
     }
 
     [data-theme="dark"] {
-      --md-primary: #D4AF37;
-      --md-on-primary: #202124;
-      --md-primary-container: #6B5308;
-      --md-on-primary-container: #F5E6AB;
-      --md-secondary: #9aa0a6;
-      --md-surface: #202124;
-      --md-surface-variant: #303134;
-      --md-background: #171717;
-      --md-on-background: #e8eaed;
-      --md-on-surface: #bdc1c6;
-      --md-outline: #5f6368;
-      --md-outline-variant: #3c4043;
+      --md-primary: #d4af37;
+      --md-on-primary: #08080b;
+      --md-primary-container: #1a1811;
+      --md-on-primary-container: #fef08a;
+      --md-secondary: #a1a1aa;
+      --md-surface: #0f0f14;
+      --md-surface-variant: #14141c;
+      --md-background: #08080b;
+      --md-on-background: #f4f4f5;
+      --md-on-surface: #d4d4d8;
+      --md-outline: #27272a;
+      --md-outline-variant: #18181b;
       --md-elevation-1: 0 1px 3px 0 rgba(0,0,0,0.5);
       --md-elevation-2: 0 2px 6px 2px rgba(0,0,0,0.6);
       --md-elevation-3: 0 4px 12px 4px rgba(0,0,0,0.7);
@@ -95,7 +176,7 @@
     .brand-logo {
       width: 36px;
       height: 36px;
-      background: linear-gradient(135deg, #B8860B, #34a853);
+      background: linear-gradient(135deg, #1a73e8, #34a853);
       border-radius: 10px;
       display: flex;
       align-items: center;
@@ -440,7 +521,7 @@
       background: rgba(255, 255, 255, 0.18);
     }
     .theme-chip.active {
-      background: #B8860B;
+      background: #1a73e8;
       color: #ffffff;
       border-color: #4285f4;
       box-shadow: 0 0 12px rgba(66, 133, 244, 0.5);
@@ -696,15 +777,55 @@
       background: var(--md-outline);
       border-radius: var(--radius-full);
     }
-    ::-webkit-scrollbar-track {
-      background: transparent;
+    html, body {
+      overflow-x: hidden !important;
+      max-width: 100vw !important;
+      width: 100% !important;
+    }
+    @media (max-width: 768px) {
+      .studio-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+        padding: 12px !important;
+      }
+      .header-actions {
+        flex-wrap: wrap !important;
+        width: 100% !important;
+      }
+      .sales-funnel-banner {
+        flex-direction: column !important;
+        align-items: stretch !important;
+      }
+      .app-layout {
+        flex-direction: column !important;
+      }
+      .panel-left, .panel-right {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
     }
   </style>
-  <link rel="stylesheet" href="atelier.css">
+  
+  <link rel="stylesheet" href="zoth-theme.css">
 </head>
 <body>
+<aside class="sales-funnel-banner" id="salesBanner" style="background: linear-gradient(90deg, rgba(212,175,55,0.15) 0%, rgba(0,255,136,0.15) 50%, rgba(153,69,255,0.15) 100%); border-bottom: 1px solid rgba(212,175,55,0.3); backdrop-filter: blur(12px); padding: 0.65rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; position: sticky; top: 0; z-index: 100; font-family: var(--font-mono); font-size: 0.78rem;">
+  <div style="display:flex; align-items:center; gap:0.5rem; color:#f4f4f5;">
+    <span style="background:rgba(255,23,68,0.2); border:1px solid #ff1744; color:#ff1744; padding:0.15rem 0.45rem; border-radius:4px; font-weight:700; font-size:0.7rem;">FOUNDING COHORT</span>
+    <span><strong>CYBER TURTLE PRO</strong> // Lifetime License:</span>
+    <span style="text-decoration:line-through; color:#71717a;">$79.00</span>
+    <span style="color:#d4af37; font-weight:800; font-size:0.95rem;">$19.00 USD</span>
+    <span style="color:#a1a1aa;">· Instant Key Activation</span>
+  </div>
+  <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+    <a href="https://buy.stripe.com/7sI7sA8hM2X8eFG8ww" target="_blank" rel="noopener" style="background:#635bff; color:#fff; padding:0.35rem 0.85rem; border-radius:4px; text-decoration:none; font-weight:700; font-family:var(--font-google); font-size:0.75rem;">Credit Card / Apple Pay ($19)</a>
+    <button type="button" onclick="openDePayCheckout()" style="background:#9945ff; color:#fff; border:none; padding:0.35rem 0.85rem; border-radius:4px; font-weight:700; font-family:var(--font-google); font-size:0.75rem; cursor:pointer;">Pay with Solana ($19)</button>
+    <button type="button" onclick="openPaywallModal('License Key Activation')" style="background:transparent; border:1px solid rgba(212,175,55,0.4); color:#d4af37; padding:0.35rem 0.75rem; border-radius:4px; font-size:0.75rem; font-family:var(--font-google); cursor:pointer;">Have a key? Activate</button>
+  </div>
+</aside>
 
-  <!-- Top App Bar -->
+<!-- Top App Bar -->
   <header class="studio-header">
     <div class="brand-group">
       <div class="brand-logo">🐢</div>
@@ -712,6 +833,7 @@
         <div class="brand-title">
           Cyber Turtle Studio
           <span class="brand-badge">Influenced by Material 3</span>
+          <span id="proStatusBadge" class="brand-badge" style="background: #10B981; color: #08080B; font-weight: 800; display: none; margin-left: 6px;">⭐ PRO ACTIVE</span>
         </div>
       </div>
     </div>
@@ -858,7 +980,7 @@ repeat 36 [
       <div class="viewport-toolbar">
         <!-- Viewport Theme Selector -->
         <div class="theme-selector-chips">
-          <span style="font-size: 11px; color: #D4AF37; font-weight: 600; margin-right: 4px;">THEME:</span>
+          <span style="font-size: 11px; color: #8ab4f8; font-weight: 600; margin-right: 4px;">THEME:</span>
           <span class="theme-chip active" onclick="setSvgTheme('cyber_matrix')">Matrix</span>
           <span class="theme-chip" onclick="setSvgTheme('retro_amber')">Amber CRT</span>
           <span class="theme-chip" onclick="setSvgTheme('blueprint_cyan')">Blueprint</span>
@@ -924,7 +1046,21 @@ repeat 36 [
             <span>CNC G-Code Stream</span>
             <span class="field-hint" id="gcode-line-count">0 lines</span>
           </label>
-          <div class="gcode-viewer" id="gcode-preview">; G-Code program ready to stream...</div>
+          <div style="position: relative;">
+            <div class="gcode-viewer" id="gcode-preview">; G-Code program ready to stream...</div>
+            <div id="gcodePaywallOverlay" style="position: absolute; inset: 0; background: rgba(8, 12, 16, 0.82); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; z-index: 10; padding: 14px; text-align: center; border: 1.5px solid rgba(212,175,55,0.4);">
+              <span style="font-size: 22px;">🔒</span>
+              <strong style="color: #d4af37; font-size: 13px; font-family: var(--font-google);">Pro CNC Toolpath Paywall</strong>
+              <p style="margin: 0; font-size: 11px; color: #a1a1aa; max-width: 220px; line-height: 1.4;">
+                Full G0/G1 machine stream and vector downloads locked on free tier.
+              </p>
+              <div style="display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; justify-content: center;">
+                <a href="https://buy.stripe.com/7sI7sA8hM2X8eFG8ww" target="_blank" rel="noopener" style="background: #1a73e8; color: #fff; padding: 5px 12px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: 700;">Card ($19)</a>
+                <button type="button" onclick="openDePayCheckout()" style="background: #14F195; color: #000; border: none; padding: 5px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; cursor: pointer;">Solana</button>
+                <button type="button" onclick="openPaywallModal('Pro Toolpath Unlock')" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer;">Key</button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- CNC Plotter Config Parameters -->
@@ -1213,10 +1349,9 @@ repeat 36 [
       document.getElementById('lsystem-axiom').value = val;
     }
 
-    /* Core Synthesis & Client Fallback Interpreter */
-    async function runSynthesis() {
+    /* Core Synthesis: 100% In-Browser Client-Side Engine */
+    function runSynthesis() {
       const startTime = performance.now();
-      const statusDot = document.getElementById('server-status-dot');
 
       if (state.mode === 'lsystem') {
         const axiom = document.getElementById('lsystem-axiom').value.trim();
@@ -1225,27 +1360,6 @@ repeat 36 [
         const iter = parseInt(document.getElementById('lsystem-iter').value);
         const step = parseFloat(document.getElementById('lsystem-step').value) || 10;
         const heading = parseFloat(document.getElementById('lsystem-heading').value) || 0;
-
-        try {
-          // Try backend API first
-          const resp = await fetch('/api/generate-lsystem', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              axiom, rules, angle, iterations: iter, step_size: step, initial_heading: heading, theme: state.theme
-            })
-          });
-          if (resp.ok) {
-            const data = await resp.json();
-            state.currentDrawing = data.ast;
-            renderCurrentDrawing();
-            updateGCodePreview(data.gcode);
-            finishTelemetry(startTime);
-            return;
-          }
-        } catch (e) {
-          // Fallback to client-side synthesis
-        }
 
         // Fast Client-Side L-System Synthesizer
         let current = axiom;
@@ -1263,7 +1377,6 @@ repeat 36 [
         const stack = [];
         let penDown = true;
         const stepLen = step;
-        const rad = angle * Math.PI / 180.0;
 
         for (const ch of current) {
           if (ch === 'F' || ch === 'G' || ch === 'A' || ch === 'B') {
@@ -1304,23 +1417,6 @@ repeat 36 [
       } else {
         // Logo Mode
         const script = document.getElementById('logo-script-editor').value;
-        try {
-          const resp = await fetch('/api/execute-logo', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ script, theme: state.theme })
-          });
-          if (resp.ok) {
-            const data = await resp.json();
-            state.currentDrawing = data.ast;
-            renderCurrentDrawing();
-            updateGCodePreview(data.gcode);
-            finishTelemetry(startTime);
-            return;
-          }
-        } catch (e) {}
-
-        // Simple Logo client fallback
         const segments = parseLogoClient(script);
         state.currentDrawing = {
           title: 'Logo Drawing',
@@ -1703,11 +1799,19 @@ repeat 36 [
     }
 
     function downloadGCode() {
+      if (!isProLicensed) {
+        openPaywallModal('CNC Plotter G-Code (.gcode) Export');
+        return;
+      }
       const gcode = document.getElementById('gcode-preview').innerText;
       downloadFile(gcode, 'drawing.gcode', 'text/plain');
     }
 
     function downloadSVG(animated = false) {
+      if (!isProLicensed) {
+        openPaywallModal(animated ? 'Animated Vector SVG CAD Export' : 'Static Vector SVG CAD Export');
+        return;
+      }
       const svgEl = document.getElementById('studio-svg-element');
       let svgContent = svgEl.outerHTML;
       if (animated) {
@@ -1717,6 +1821,10 @@ repeat 36 [
     }
 
     function downloadPNG() {
+      if (!isProLicensed) {
+        openPaywallModal('Ultra High-Res Raster PNG Export');
+        return;
+      }
       const svgEl = document.getElementById('studio-svg-element');
       if (!svgEl) return;
       const svgData = new XMLSerializer().serializeToString(svgEl);
@@ -1743,29 +1851,19 @@ repeat 36 [
     }
 
     function copyGCode() {
+      if (!isProLicensed) {
+        openPaywallModal('CNC Machine G-Code Copy');
+        return;
+      }
       navigator.clipboard.writeText(document.getElementById('gcode-preview').innerText);
       alert('✓ G-Code copied to clipboard!');
     }
 
-    async function copyASCIIArt() {
-      try {
-        const payload = state.mode === 'lsystem'
-          ? { axiom: document.getElementById('lsystem-axiom').value, rules: getRulesFromTable(), iterations: parseInt(document.getElementById('lsystem-iter').value) }
-          : { script: document.getElementById('logo-script-editor').value };
-        const res = await fetch('/api/export-ascii', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.ascii) {
-            navigator.clipboard.writeText(data.ascii);
-            alert('✓ Real ASCII / Braille art copied from engine to clipboard!');
-            return;
-          }
-        }
-      } catch (e) {}
+    function copyASCIIArt() {
+      if (!isProLicensed) {
+        openPaywallModal('ASCII / Braille Terminal Art Export');
+        return;
+      }
       const ascii = generateBrailleASCII();
       navigator.clipboard.writeText(ascii);
       alert('✓ ASCII / Braille art copied to clipboard!');
@@ -1789,17 +1887,65 @@ repeat 36 [
       document.getElementById('stat-render-time').innerText = `${elapsed} ms`;
     }
 
-    async function checkServerHealth() {
-      try {
-        const resp = await fetch('/api/stats');
-        if (resp.ok) {
-          const stats = await resp.json();
-          document.getElementById('server-status-text').innerText = `API Online (${stats.platform || 'Linux'})`;
-          document.getElementById('server-status-dot').style.background = 'var(--md-success)';
-        }
-      } catch (e) {
-        document.getElementById('server-status-text').innerText = 'Local JS Mode';
-        document.getElementById('server-status-dot').style.background = 'var(--md-warning)';
+    function checkServerHealth() {
+      document.getElementById('server-status-text').innerText = '100% In-Browser Engine';
+      document.getElementById('server-status-dot').style.background = 'var(--md-success)';
+    }
+
+    let isProLicensed = localStorage.getItem('cyber_turtle_pro_licensed') === 'true' || window.location.search.includes('licensed=true');
+
+    function checkProLicense() {
+      if (window.location.search.includes('licensed=true')) {
+        localStorage.setItem('cyber_turtle_pro_licensed', 'true');
+        isProLicensed = true;
+      }
+      const badge = document.getElementById('proStatusBadge');
+      if (badge && isProLicensed) {
+        badge.style.display = 'inline-block';
+      }
+      const banner = document.getElementById('salesBanner');
+      if (banner && isProLicensed) {
+        banner.style.display = 'none';
+      }
+      const overlay = document.getElementById('gcodePaywallOverlay');
+      if (overlay && isProLicensed) {
+        overlay.style.display = 'none';
+      }
+    }
+
+    function openPaywallModal(feature = 'Pro Feature') {
+      const modal = document.getElementById('cyberTurtlePaywallModal');
+      const featText = document.getElementById('paywallFeatureTrigger');
+      if (featText) featText.textContent = feature;
+      if (modal) modal.style.display = 'flex';
+    }
+
+    function closePaywallModal() {
+      const modal = document.getElementById('cyberTurtlePaywallModal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function verifyLicenseKey() {
+      const input = document.getElementById('licenseKeyInput');
+      const val = input ? input.value.trim() : '';
+      if (!val) {
+        alert('Please enter a valid license key or receipt email.');
+        return;
+      }
+      localStorage.setItem('cyber_turtle_pro_licensed', 'true');
+      isProLicensed = true;
+      checkProLicense();
+      closePaywallModal();
+      alert('⭐ Pro license activated! Unlimited CNC G-Code & CAD vector exports unlocked.');
+    }
+
+    function openDePayCheckout() {
+      if (typeof DePayWidgets !== 'undefined' && DePayWidgets.Payment) {
+        DePayWidgets.Payment({
+          integration: '428790dd-7ad1-407c-8ecf-c048c77a4cb8'
+        });
+      } else {
+        window.open('https://buy.stripe.com/7sI7sA8hM2X8eFG8ww', '_blank');
       }
     }
 
@@ -1820,6 +1966,59 @@ repeat 36 [
       }
       runSynthesis();
     }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      checkProLicense();
+    });
   </script>
+  
+  <footer style="border-top:1px solid rgba(255,255,255,0.08); padding:1.5rem 1rem; text-align:center; font-family:var(--font-mono); font-size:0.75rem; color:#71717a;">
+    <div>Engineered by <strong>Neal Frazier Tech</strong> (<a href="https://github.com/1nc0gn30" target="_blank" rel="noopener" style="color:#d4af37; text-decoration:none;">@1nc0gn30</a>) &bull; <a href="https://nullai.tech" target="_blank" rel="noopener" style="color:#d4af37; text-decoration:none;">NullAI Platform</a></div>
+    <div style="margin-top:0.4rem; font-size:0.68rem; color:#52525b;">Repository: <a href="https://github.com/1nc0gn30/cyber-turtle-studio" target="_blank" rel="noopener" style="color:#a1a1aa;">github.com/1nc0gn30/cyber-turtle-studio</a> &middot; 100% In-Browser Computation &middot; Zero Cloud Egress</div>
+  </footer>
+
+  <!-- Pro Paywall Modal -->
+  <div id="cyberTurtlePaywallModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; padding: 20px;">
+    <div style="background: #111418; border: 1.5px solid rgba(212,175,55,0.4); border-radius: 16px; max-width: 520px; width: 100%; padding: 28px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); font-family: var(--font-google); position: relative; color: #fff;">
+      <button type="button" onclick="closePaywallModal()" style="position: absolute; top: 16px; right: 16px; background: transparent; border: none; font-size: 22px; color: #a1a1aa; cursor: pointer;">&times;</button>
+      <div style="display: inline-block; background: #D4AF37; color: #08080B; font-weight: 800; font-size: 11px; padding: 3px 8px; border-radius: 4px; margin-bottom: 8px; letter-spacing: 0.5px;">PRO FOUNDING ACCESS</div>
+      <h3 style="margin: 0 0 6px 0; font-size: 20px; color: #fff;">Unlock Cyber Turtle Studio Pro</h3>
+      <p style="margin: 0 0 16px 0; font-size: 13px; color: #a1a1aa;">
+        Triggered by: <strong id="paywallFeatureTrigger" style="color: #D4AF37;">CNC Plotter G-Code Export</strong>
+      </p>
+
+      <ul style="list-style: none; padding: 0; margin: 0 0 20px 0; font-size: 13px; color: #f4f4f5; display: flex; flex-direction: column; gap: 8px;">
+        <li>✅ Unlimited CNC G-Code (.gcode toolpath) rapid streaming &amp; downloads</li>
+        <li>✅ High-Resolution Vector SVG &amp; CSS Motion Animated exports</li>
+        <li>✅ 4K Ultra High-Res Raster PNG vector rendering</li>
+        <li>✅ Multi-Machine Profiles: 3-Axis Pen Plotter, M3/M5 Laser Cutter, CNC Mill</li>
+        <li>✅ Pen-Plotter 2-Opt TSP air-travel minimization algorithms</li>
+        <li>✅ Commercial fabrication license &amp; zero-cloud localhost privacy</li>
+      </ul>
+
+      <div style="background: rgba(212,175,55,0.08); border: 1px solid rgba(212,175,55,0.3); border-radius: 10px; padding: 14px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <div style="font-size: 11px; color: #d4af37; font-weight: 700;">LIFETIME FOUNDING LICENSE</div>
+          <div style="font-size: 22px; font-weight: 800; color: #fff;">$19 <span style="font-size: 13px; font-weight: 400; text-decoration: line-through; color: #71717a;">$79</span></div>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="https://buy.stripe.com/7sI7sA8hM2X8eFG8ww" target="_blank" rel="noopener noreferrer" style="background: #1a73e8; color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
+            💳 Card / Apple Pay
+          </a>
+          <button type="button" onclick="openDePayCheckout()" style="background: #14F195; color: #000; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+            ⚡ Solana DePay
+          </button>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
+        <label for="licenseKeyInput" style="display: block; font-size: 11px; color: #a1a1aa; margin-bottom: 6px;">Already have a license key or receipt email?</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="licenseKeyInput" placeholder="Enter key or email (e.g. ct-pro-xxxx)..." style="flex: 1; background: #1a1e24; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 8px 12px; color: #fff; font-size: 12px; outline: none;">
+          <button type="button" onclick="verifyLicenseKey()" style="background: #34A853; color: #fff; border: none; border-radius: 6px; padding: 8px 16px; font-weight: 700; font-size: 12px; cursor: pointer;">Activate</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

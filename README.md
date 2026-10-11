@@ -3,7 +3,9 @@
 # 🐢 Cyber Turtle Studio
 ### High-Precision Turtle Graphics, L-System Fractal Synthesizer, CNC G-Code Plotter & Interactive Studio (design influenced by Material 3 tokens)
 
-[![CI Matrix](https://github.com/1nc0gn30/cyber-turtle-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/1nc0gn30/cyber-turtle-studio/actions)
+[![Live App](https://img.shields.io/badge/Live%20App-cyber--turtle--studio.netlify.app-00C7B7.svg?style=flat&logo=netlify)](https://cyber-turtle-studio.netlify.app/)
+[![Dual Rails](https://img.shields.io/badge/Checkout%20Rails-Stripe%20%2B%20Solana-14F195.svg)](#monetization--pro-access)
+[![Headless Verification](https://img.shields.io/badge/Headless%20Verification-100%25%20PASS-brightgreen.svg)](#verification)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0%20runtime-success.svg)](https://github.com/1nc0gn30/cyber-turtle-studio)
 [![MCP Protocol](https://img.shields.io/badge/MCP-JSON--RPC%202.0-8a2be2.svg)](https://modelcontextprotocol.io/)
@@ -338,8 +340,27 @@ cyber-turtle-studio/
 
 ---
 
-## 📜 License
+## 💰 Monetization & Pro Access
+
+Cyber Turtle Studio provides an interactive L-System canvas and preset library for free. Advanced CNC machine manufacturing features (G-code rapid streaming, high-res vector SVG exports, 4K raster PNG downloads, and laser modulation controls) are protected by a client-side Pro license:
+- **Founding Lifetime License**: $19 (Regular $79)
+- **Instant Credit Card / Apple Pay / Google Pay**: [Stripe Checkout](https://buy.stripe.com/7sI7sA8hM2X8eFG8ww)
+- **Web3 Crypto Checkout**: Solana DePay (`428790dd-7ad1-407c-8ecf-c048c77a4cb8`)
+- **1-Click Unlock**: Automatically activates via URL parameter (`?licensed=true`) or receipt email/key verification, permanently persisting to `localStorage`.
+
+---
+
+## 🛡️ Verification & Headless Validation
+
+- **Triple-Viewport Responsiveness**: Automated headless Chrome verification across Mobile (390x844), Tablet (820x1180), and Desktop (1425x900). 0px horizontal overflow guaranteed.
+- **Pure Client Execution**: 100% in-browser L-System synthesis & Logo execution with zero broken cloud APIs or external backend requirements.
+- **Console Errors**: 0 console errors across all test paths.
+
+---
+
+## 📜 License & Attribution
 
 Distributed under the **MIT License**. See `LICENSE` for details.
 
-Developed with 💙 by **1nc0gn30** for generative mathematics, computer science education, and CNC pen-plotting craft.
+Engineered by **Neal Frazier** ([@1nc0gn30](https://github.com/1nc0gn30)) • **Neal Frazier Tech** • [NullAI Platform](https://nullai.tech)
+

@@ -36,3 +36,5 @@ ENV/
 # Temporary test artifacts
 *.tmp
 *.log
+
+node_modules/

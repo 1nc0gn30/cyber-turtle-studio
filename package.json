@@ -1,0 +1,21 @@
+{
+  "name": "cyber-turtle-studio",
+  "version": "1.0.0",
+  "description": "L-System Fractal Engine, Logo DSL Compiler, CNC Pen-Plotter Toolpath Optimizer & MCP Server",
+  "main": "electron/main.cjs",
+  "bin": {
+    "cyber-turtle": "./bin/cyber-turtle.js"
+  },
+  "scripts": {
+    "start": "electron .",
+    "desktop": "electron .",
+    "web": "node bin/cyber-turtle.js web",
+    "cli": "node bin/cyber-turtle.js",
+    "test": "pytest tests/"
+  },
+  "author": "Zoth Core Intelligence",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^34.5.8"
+  }
+}

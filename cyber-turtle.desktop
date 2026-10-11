@@ -1,0 +1,20 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Cyber Turtle Studio
+GenericName=L-System Fractal & CNC Plotter Engine
+Comment=Logo DSL, L-System Fractal Synthesis, Pen-Plotter Toolpath Optimization & MCP Turtle Workstation
+Exec=/usr/local/bin/cyber-turtle desktop
+Icon=/media/neo/f2fdda77-178b-4603-ae80-c7aa4cd97908/zoth-micro-repos/cyber-turtle-studio/assets/icon.png
+Terminal=false
+Categories=Development;Graphics;VectorGraphics;Education;
+StartupNotify=true
+Actions=CLI;Web;
+
+[Desktop Action CLI]
+Name=Open Cyber Turtle CLI
+Exec=x-terminal-emulator -e "/usr/local/bin/cyber-turtle --help"
+
+[Desktop Action Web]
+Name=Open Web UI (Port 8085)
+Exec=/usr/local/bin/cyber-turtle web
