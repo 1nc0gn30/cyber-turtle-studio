@@ -97,6 +97,24 @@ EMBEDDED_HTML_FALLBACK = """<!DOCTYPE html>
 """
 
 
+def _is_local_origin(origin) -> bool:
+    """True for no Origin (CLI/curl/same-origin GET) or a localhost origin."""
+    if not origin:
+        return True
+    from urllib.parse import urlparse
+    try:
+        u = urlparse(origin)
+    except Exception:
+        return False
+    return u.scheme in ("http", "https") and (u.hostname or "") in ("localhost", "127.0.0.1", "::1")
+
+
+def _cors_origin(handler) -> str:
+    """Echo the Origin only when it is local; never '*'."""
+    origin = handler.headers.get("Origin", "")
+    return origin if origin and _is_local_origin(origin) else "http://127.0.0.1"
+
+
 class StudioHTTPRequestHandler(SimpleHTTPRequestHandler):
     """Custom HTTP Request Handler with REST API routes, CORS headers, and static UI serving."""
 
@@ -122,7 +140,7 @@ class StudioHTTPRequestHandler(SimpleHTTPRequestHandler):
 
     def _set_cors_headers(self) -> None:
         """Set cross-origin resource sharing headers for web clients and MCP bridges."""
-        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Origin", _cors_origin(self))
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, HEAD")
         self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With")
 
@@ -273,6 +291,12 @@ class StudioHTTPRequestHandler(SimpleHTTPRequestHandler):
 
     def do_POST(self) -> None:
         """Route POST requests for Logo execution, L-System synthesis, and exporters."""
+
+        if not _is_local_origin(self.headers.get("Origin")):
+
+            self.send_error(403, "Cross-origin request blocked")
+
+            return
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
 

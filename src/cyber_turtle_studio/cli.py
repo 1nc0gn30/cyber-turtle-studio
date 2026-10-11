@@ -68,6 +68,24 @@ PRESETS = GLOBAL_REGISTRY._presets
 # Terminal Formatting & Color Styling Helper
 # =============================================================================
 
+def _is_local_origin(origin) -> bool:
+    """True for no Origin (CLI/curl/same-origin GET) or a localhost origin."""
+    if not origin:
+        return True
+    from urllib.parse import urlparse
+    try:
+        u = urlparse(origin)
+    except Exception:
+        return False
+    return u.scheme in ("http", "https") and (u.hostname or "") in ("localhost", "127.0.0.1", "::1")
+
+
+def _cors_origin(handler) -> str:
+    """Echo the Origin only when it is local; never '*'."""
+    origin = handler.headers.get("Origin", "")
+    return origin if origin and _is_local_origin(origin) else "http://127.0.0.1"
+
+
 class Styler:
     """Cross-platform ANSI color formatter with automatic degradation."""
 
@@ -611,7 +629,7 @@ class StudioHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
-        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Origin", _cors_origin(self))
         self.end_headers()
         self.wfile.write(body)
 
@@ -646,6 +664,12 @@ class StudioHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         self.send_error(404, "Endpoint not found")
 
     def do_POST(self) -> None:
+
+        if not _is_local_origin(self.headers.get("Origin")):
+
+            self.send_error(403, "Cross-origin request blocked")
+
+            return
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
         length = int(self.headers.get("Content-Length", 0))

@@ -156,7 +156,7 @@ def test_ui_server_cors_options(live_server: str):
     with urllib.request.urlopen(req) as resp:
         assert resp.status == 200
         headers = dict(resp.headers)
-        assert headers.get("Access-Control-Allow-Origin") == "*"
+        assert headers.get("Access-Control-Allow-Origin") == "http://127.0.0.1"
 
 
 def test_ui_server_404_error(live_server: str):
