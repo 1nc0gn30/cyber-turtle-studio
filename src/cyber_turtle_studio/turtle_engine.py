@@ -6,6 +6,7 @@ fill polygon generation, and an extensible Logo mini-script interpreter.
 
 from __future__ import annotations
 
+import ast
 import math
 import re
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
@@ -18,6 +19,46 @@ from cyber_turtle_studio.models import (
     Point2D,
     TurtleState,
 )
+
+
+_MATH_BINOPS = {
+    ast.Add: lambda a, b: a + b, ast.Sub: lambda a, b: a - b,
+    ast.Mult: lambda a, b: a * b, ast.Div: lambda a, b: a / b,
+    ast.FloorDiv: lambda a, b: a // b, ast.Mod: lambda a, b: a % b,
+}
+
+
+def safe_math_eval(expr: str, names: dict) -> float:
+    """Evaluate arithmetic over numbers, whitelisted names and whitelisted functions.
+    No attribute access, subscripts or dunder lookups (the old eval() allowed
+    `(1).__class__.__base__.__subclasses__()`), and exponents are bounded."""
+    tree = ast.parse(expr, mode="eval")
+
+    def ev(n):
+        if isinstance(n, ast.Expression):
+            return ev(n.body)
+        if isinstance(n, ast.Constant) and isinstance(n.value, (int, float)) and not isinstance(n.value, bool):
+            return n.value
+        if isinstance(n, ast.Name) and n.id in names and not n.id.startswith("_"):
+            return names[n.id]
+        if isinstance(n, ast.UnaryOp) and isinstance(n.op, (ast.UAdd, ast.USub)):
+            v = ev(n.operand)
+            return v if isinstance(n.op, ast.UAdd) else -v
+        if isinstance(n, ast.BinOp):
+            a, b = ev(n.left), ev(n.right)
+            if isinstance(n.op, ast.Pow):
+                if abs(b) > 64 or abs(a) > 1e6:
+                    raise ValueError("exponent too large")
+                return a ** b
+            fn = _MATH_BINOPS.get(type(n.op))
+            if fn:
+                return fn(a, b)
+        if (isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and callable(names.get(n.func.id))
+                and not n.keywords and len(n.args) <= 2):
+            return names[n.func.id](*[ev(a) for a in n.args])
+        raise ValueError(f"unsupported expression: {ast.dump(n)[:60]}")
+
+    return ev(tree)
 
 
 class TurtleEngine:
@@ -405,8 +446,8 @@ class LogoParser:
             }
             safe_dict.update(self.variables)
             # Only evaluate if contains basic math characters
-            if re.match(r"^[0-9\.\+\-\*\/\(\)\s_a-zA-Z:,]+$", val_clean):
-                return float(eval(val_clean, {"__builtins__": None}, safe_dict))
+            if re.match(r"^[0-9\.\+\-\*\/\(\)\s_a-zA-Z:,%]+$", val_clean):
+                return float(safe_math_eval(val_clean, safe_dict))
         except Exception:
             pass
 
