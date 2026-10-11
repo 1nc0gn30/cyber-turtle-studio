@@ -12,13 +12,16 @@
   <meta property="og:description" content="Synthesize recursive L-Systems, fractal botany, Hilbert curves, and export CNC plotter G-Code and SVGs.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://cyber-turtle-studio.netlify.app/">
-  <meta property="og:image" content="https://cyber-turtle-studio.netlify.app/favicon.ico">
+  <meta property="og:image" content="https://cyber-turtle-studio.netlify.app/assets/banner.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@1nc0gn30">
   <meta name="twitter:creator" content="@1nc0gn30">
   <meta name="twitter:title" content="Cyber Turtle Studio | L-System Fractal & CNC Plotter Engine">
   <meta name="twitter:description" content="Synthesize recursive L-Systems, fractal botany, Hilbert curves, and export CNC plotter G-Code and SVGs.">
-  <meta name="twitter:image" content="https://cyber-turtle-studio.netlify.app/favicon.ico">
+  <meta name="twitter:image" content="https://cyber-turtle-studio.netlify.app/assets/banner.png">
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/icon.png">
 
   <!-- AEO & SEO Schema.org Graph -->
   <script type="application/ld+json">
@@ -827,12 +830,13 @@
 
 <!-- Top App Bar -->
   <header class="studio-header">
-    <div class="brand-group">
-      <div class="brand-logo">🐢</div>
+    <div class="brand-group" style="display: flex; align-items: center; gap: 10px;">
+      <img src="/assets/icon.png" alt="Cyber Turtle Studio Icon" width="36" height="36" style="border-radius: 8px; box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);">
       <div>
         <div class="brand-title">
           Cyber Turtle Studio
-          <span class="brand-badge">Influenced by Material 3</span>
+          <span class="brand-badge">v2.5 SOVEREIGN</span>
+          <span id="licenseBadge" class="brand-badge" style="border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: #a1a1aa; font-weight: 700; margin-left: 6px;">⚡ FREE TIER</span>
           <span id="proStatusBadge" class="brand-badge" style="background: #10B981; color: #08080B; font-weight: 800; display: none; margin-left: 6px;">⭐ PRO ACTIVE</span>
         </div>
       </div>
@@ -1892,13 +1896,47 @@ repeat 36 [
       document.getElementById('server-status-dot').style.background = 'var(--md-success)';
     }
 
-    let isProLicensed = localStorage.getItem('cyber_turtle_pro_licensed') === 'true' || window.location.search.includes('licensed=true');
+    function isProActive() {
+      return localStorage.getItem('cyber_turtle_pro_licensed') === 'true' ||
+             localStorage.getItem('zoth_cyber_turtle_licensed') === 'true' ||
+             localStorage.getItem('pro_licensed') === 'true';
+    }
+
+    let isProLicensed = isProActive() || window.location.search.includes('licensed=true');
 
     function checkProLicense() {
-      if (window.location.search.includes('licensed=true')) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const isParamLicensed = urlParams.get('licensed') === 'true' || urlParams.get('pro') === 'true' || urlParams.get('session_id');
+
+      if (isParamLicensed) {
         localStorage.setItem('cyber_turtle_pro_licensed', 'true');
+        localStorage.setItem('zoth_cyber_turtle_licensed', 'true');
+        localStorage.setItem('pro_licensed', 'true');
+        isProLicensed = true;
+        if (window.history && window.history.replaceState) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      } else if (isProActive()) {
         isProLicensed = true;
       }
+
+      const licenseBadge = document.getElementById('licenseBadge');
+      if (licenseBadge) {
+        if (isProLicensed) {
+          licenseBadge.innerText = '⭐ PRO ACTIVE';
+          licenseBadge.style.background = '#10B981';
+          licenseBadge.style.color = '#08080B';
+          licenseBadge.style.border = '1px solid #10B981';
+          licenseBadge.style.boxShadow = '0 0 10px rgba(16, 185, 129, 0.4)';
+        } else {
+          licenseBadge.innerText = '⚡ FREE TIER';
+          licenseBadge.style.border = '1px solid rgba(255,255,255,0.2)';
+          licenseBadge.style.background = 'rgba(255,255,255,0.06)';
+          licenseBadge.style.color = '#a1a1aa';
+          licenseBadge.style.boxShadow = 'none';
+        }
+      }
+
       const badge = document.getElementById('proStatusBadge');
       if (badge && isProLicensed) {
         badge.style.display = 'inline-block';
@@ -1914,30 +1952,34 @@ repeat 36 [
     }
 
     function openPaywallModal(feature = 'Pro Feature') {
-      const modal = document.getElementById('cyberTurtlePaywallModal');
+      const modal = document.getElementById('cyberTurtlePaywallModal') || document.getElementById('licenseModal');
       const featText = document.getElementById('paywallFeatureTrigger');
       if (featText) featText.textContent = feature;
       if (modal) modal.style.display = 'flex';
     }
 
     function closePaywallModal() {
-      const modal = document.getElementById('cyberTurtlePaywallModal');
+      const modal = document.getElementById('cyberTurtlePaywallModal') || document.getElementById('licenseModal');
       if (modal) modal.style.display = 'none';
     }
 
-    function verifyLicenseKey() {
-      const input = document.getElementById('licenseKeyInput');
-      const val = input ? input.value.trim() : '';
-      if (!val) {
+    function verifyLicenseKey(providedKey) {
+      const input = document.getElementById('licenseKeyInput') || document.getElementById('license-input');
+      const val = (providedKey || (input ? input.value : '')).trim();
+      if (!val || val.length < 3) {
         alert('Please enter a valid license key or receipt email.');
-        return;
+        return false;
       }
       localStorage.setItem('cyber_turtle_pro_licensed', 'true');
+      localStorage.setItem('zoth_cyber_turtle_licensed', 'true');
+      localStorage.setItem('pro_licensed', 'true');
+      localStorage.setItem('turtle_pro_key', val);
       isProLicensed = true;
       checkProLicense();
       closePaywallModal();
-      alert('⭐ Pro license activated! Unlimited CNC G-Code & CAD vector exports unlocked.');
+      return true;
     }
+    window.activateLicenseKey = verifyLicenseKey;
 
     function openDePayCheckout() {
       if (typeof DePayWidgets !== 'undefined' && DePayWidgets.Payment) {
@@ -2014,8 +2056,8 @@ repeat 36 [
       <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
         <label for="licenseKeyInput" style="display: block; font-size: 11px; color: #a1a1aa; margin-bottom: 6px;">Already have a license key or receipt email?</label>
         <div style="display: flex; gap: 8px;">
-          <input type="text" id="licenseKeyInput" placeholder="Enter key or email (e.g. ct-pro-xxxx)..." style="flex: 1; background: #1a1e24; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 8px 12px; color: #fff; font-size: 12px; outline: none;">
-          <button type="button" onclick="verifyLicenseKey()" style="background: #34A853; color: #fff; border: none; border-radius: 6px; padding: 8px 16px; font-weight: 700; font-size: 12px; cursor: pointer;">Activate</button>
+          <input type="text" id="licenseKeyInput" placeholder="TURTLE-PRO-2026 or receipt email" style="flex: 1; background: #1a1e24; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 8px 12px; color: #fff; font-size: 12px; outline: none;">
+          <button id="btnActivateKey" type="button" onclick="verifyLicenseKey()" style="background: #34A853; color: #fff; border: none; border-radius: 6px; padding: 8px 16px; font-weight: 700; font-size: 12px; cursor: pointer;">Activate</button>
         </div>
       </div>
     </div>
