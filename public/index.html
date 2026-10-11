@@ -837,7 +837,6 @@
           Cyber Turtle Studio
           <span class="brand-badge">v2.5 SOVEREIGN</span>
           <span id="licenseBadge" class="brand-badge" style="border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: #a1a1aa; font-weight: 700; margin-left: 6px;">⚡ FREE TIER</span>
-          <span id="proStatusBadge" class="brand-badge" style="background: #10B981; color: #08080B; font-weight: 800; display: none; margin-left: 6px;">⭐ PRO ACTIVE</span>
         </div>
       </div>
     </div>
@@ -1040,7 +1039,7 @@ repeat 36 [
     <aside class="panel-right">
       <div class="panel-header">
         <span class="panel-title">G-Code Plotter & Exports</span>
-        <button class="btn btn-outlined" style="padding: 4px 10px; font-size: 11px;" onclick="copyGCode()">Copy G-Code</button>
+        <button id="btn-copy-gcode" class="btn btn-outlined" style="padding: 4px 10px; font-size: 11px;" onclick="copyGCode()">Copy G-Code</button>
       </div>
 
       <div class="editor-section">
@@ -1106,19 +1105,19 @@ repeat 36 [
         <div class="field-group" style="margin-top: 8px;">
           <label class="field-label">1-Click Export Artifacts</label>
           <div style="display: flex; flex-direction: column; gap: 8px;">
-            <button class="btn btn-primary" onclick="downloadGCode()" style="justify-content: center;">
+            <button id="btn-download-gcode" class="btn btn-primary" onclick="downloadGCode()" style="justify-content: center;">
               📥 Download .gcode (CNC Plotter)
             </button>
-            <button class="btn btn-secondary" onclick="downloadSVG(false)" style="justify-content: center;">
+            <button id="btn-download-svg" class="btn btn-secondary" onclick="downloadSVG(false)" style="justify-content: center;">
               🖼️ Download Vector .svg (Static)
             </button>
-            <button class="btn btn-secondary" onclick="downloadSVG(true)" style="justify-content: center;">
+            <button id="btn-download-animated-svg" class="btn btn-secondary" onclick="downloadSVG(true)" style="justify-content: center;">
               🎬 Download Animated .svg (CSS Motion)
             </button>
-            <button class="btn btn-secondary" onclick="downloadPNG()" style="justify-content: center;">
+            <button id="btn-download-png" class="btn btn-secondary" onclick="downloadPNG()" style="justify-content: center;">
               📷 Download Raster .png (High-Res)
             </button>
-            <button class="btn btn-secondary" onclick="copyASCIIArt()" style="justify-content: center;">
+            <button id="btn-copy-ascii" class="btn btn-secondary" onclick="copyASCIIArt()" style="justify-content: center;">
               📋 Copy Terminal ASCII / Braille Art
             </button>
           </div>
@@ -1215,6 +1214,27 @@ repeat 36 [
 
   <!-- Studio JavaScript Application Core -->
   <script>
+    // Zero-alert non-blocking toast engine
+    function showToast(message, type = 'info') {
+      let toastContainer = document.getElementById('toastContainer');
+      if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toastContainer';
+        toastContainer.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;';
+        document.body.appendChild(toastContainer);
+      }
+      const toast = document.createElement('div');
+      toast.style.cssText = `pointer-events:auto;min-width:260px;max-width:400px;padding:12px 18px;border-radius:10px;font-family:var(--font-mono, monospace);font-size:13px;color:#fff;backdrop-filter:blur(10px);box-shadow:0 8px 32px rgba(0,0,0,0.5);display:flex;align-items:center;gap:10px;animation:slideInToast 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;background:${type === 'success' ? 'rgba(16, 185, 129, 0.95)' : type === 'warning' ? 'rgba(245, 158, 11, 0.95)' : 'rgba(30, 41, 59, 0.95)'};border:1px solid ${type === 'success' ? '#10b981' : type === 'warning' ? '#f59e0b' : 'rgba(255,255,255,0.15)'};`;
+      toast.innerHTML = `<span>${message}</span>`;
+      toastContainer.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
     // State management
     const state = {
       mode: 'lsystem', // 'lsystem' or 'logo'
@@ -1860,7 +1880,7 @@ repeat 36 [
         return;
       }
       navigator.clipboard.writeText(document.getElementById('gcode-preview').innerText);
-      alert('✓ G-Code copied to clipboard!');
+      showToast('✓ G-Code copied to clipboard!', 'success');
     }
 
     function copyASCIIArt() {
@@ -1870,7 +1890,7 @@ repeat 36 [
       }
       const ascii = generateBrailleASCII();
       navigator.clipboard.writeText(ascii);
-      alert('✓ ASCII / Braille art copied to clipboard!');
+      showToast('✓ ASCII / Braille art copied to clipboard!', 'success');
     }
 
     function generateBrailleASCII() {
@@ -1899,6 +1919,8 @@ repeat 36 [
     function isProActive() {
       return localStorage.getItem('cyber_turtle_pro_licensed') === 'true' ||
              localStorage.getItem('zoth_cyber_turtle_licensed') === 'true' ||
+             localStorage.getItem('turtle_pro_licensed') === 'true' ||
+             localStorage.getItem('agent_cyber_turtle_pro') === 'true' ||
              localStorage.getItem('pro_licensed') === 'true';
     }
 
@@ -1911,6 +1933,8 @@ repeat 36 [
       if (isParamLicensed) {
         localStorage.setItem('cyber_turtle_pro_licensed', 'true');
         localStorage.setItem('zoth_cyber_turtle_licensed', 'true');
+        localStorage.setItem('turtle_pro_licensed', 'true');
+        localStorage.setItem('agent_cyber_turtle_pro', 'true');
         localStorage.setItem('pro_licensed', 'true');
         isProLicensed = true;
         if (window.history && window.history.replaceState) {
@@ -1937,10 +1961,6 @@ repeat 36 [
         }
       }
 
-      const badge = document.getElementById('proStatusBadge');
-      if (badge && isProLicensed) {
-        badge.style.display = 'inline-block';
-      }
       const banner = document.getElementById('salesBanner');
       if (banner && isProLicensed) {
         banner.style.display = 'none';
@@ -1967,16 +1987,19 @@ repeat 36 [
       const input = document.getElementById('licenseKeyInput') || document.getElementById('license-input');
       const val = (providedKey || (input ? input.value : '')).trim();
       if (!val || val.length < 3) {
-        alert('Please enter a valid license key or receipt email.');
+        showToast('Please enter a valid license key or receipt email.', 'warning');
         return false;
       }
       localStorage.setItem('cyber_turtle_pro_licensed', 'true');
       localStorage.setItem('zoth_cyber_turtle_licensed', 'true');
+      localStorage.setItem('turtle_pro_licensed', 'true');
+      localStorage.setItem('agent_cyber_turtle_pro', 'true');
       localStorage.setItem('pro_licensed', 'true');
       localStorage.setItem('turtle_pro_key', val);
       isProLicensed = true;
       checkProLicense();
       closePaywallModal();
+      showToast('⭐ Pro License activated! Unlimited CNC G-Code & Vector exports unlocked.', 'success');
       return true;
     }
     window.activateLicenseKey = verifyLicenseKey;
@@ -2020,7 +2043,7 @@ repeat 36 [
   </footer>
 
   <!-- Pro Paywall Modal -->
-  <div id="cyberTurtlePaywallModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; padding: 20px;">
+  <div id="cyberTurtlePaywallModal" data-alias="paywall-modal" class="pro-paywall-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; padding: 20px;">
     <div style="background: #111418; border: 1.5px solid rgba(212,175,55,0.4); border-radius: 16px; max-width: 520px; width: 100%; padding: 28px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); font-family: var(--font-google); position: relative; color: #fff;">
       <button type="button" onclick="closePaywallModal()" style="position: absolute; top: 16px; right: 16px; background: transparent; border: none; font-size: 22px; color: #a1a1aa; cursor: pointer;">&times;</button>
       <div style="display: inline-block; background: #D4AF37; color: #08080B; font-weight: 800; font-size: 11px; padding: 3px 8px; border-radius: 4px; margin-bottom: 8px; letter-spacing: 0.5px;">PRO FOUNDING ACCESS</div>
@@ -2056,8 +2079,8 @@ repeat 36 [
       <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
         <label for="licenseKeyInput" style="display: block; font-size: 11px; color: #a1a1aa; margin-bottom: 6px;">Already have a license key or receipt email?</label>
         <div style="display: flex; gap: 8px;">
-          <input type="text" id="licenseKeyInput" placeholder="TURTLE-PRO-2026 or receipt email" style="flex: 1; background: #1a1e24; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 8px 12px; color: #fff; font-size: 12px; outline: none;">
-          <button id="btnActivateKey" type="button" onclick="verifyLicenseKey()" style="background: #34A853; color: #fff; border: none; border-radius: 6px; padding: 8px 16px; font-weight: 700; font-size: 12px; cursor: pointer;">Activate</button>
+          <input type="text" id="licenseKeyInput" data-alias="license-key-input" placeholder="TURTLE-PRO-2026 or receipt email" style="flex: 1; background: #1a1e24; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 8px 12px; color: #fff; font-size: 12px; outline: none;">
+          <button id="btnActivateKey" data-alias="activate-key-btn" type="button" onclick="verifyLicenseKey()" style="background: #34A853; color: #fff; border: none; border-radius: 6px; padding: 8px 16px; font-weight: 700; font-size: 12px; cursor: pointer;">Activate</button>
         </div>
       </div>
     </div>

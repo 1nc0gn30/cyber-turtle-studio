@@ -6,13 +6,29 @@
   "bin": {
     "cyber-turtle": "./bin/cyber-turtle.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/1nc0gn30/cyber-turtle-studio.git"
+  },
   "scripts": {
     "start": "python3 -m http.server 8080 --directory public",
     "desktop": "electron .",
     "web": "node bin/cyber-turtle.js web",
     "cli": "node bin/cyber-turtle.js",
-    "test": "pytest tests/"
+    "test": "pytest tests/",
+    "test:ui": "python3 scripts/verify_ui.py"
   },
+  "keywords": [
+    "l-system",
+    "fractal",
+    "turtle-geometry",
+    "logo",
+    "cnc-pen-plotter",
+    "gcode",
+    "svg",
+    "mcp",
+    "sovereign"
+  ],
   "author": "Neal Frazier Tech (@1nc0gn30) • NullAI Platform",
   "license": "MIT",
   "devDependencies": {
