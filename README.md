@@ -1,4 +1,10 @@
 <div align="center">
+  <img src="assets/hero-banner.svg" alt="Cyber Turtle Studio — Sovereign Architecture Banner" width="100%" />
+</div>
+
+<br />
+
+<div align="center">
 
 # 🐢 Cyber Turtle Studio
 ### High-Precision Turtle Graphics, L-System Fractal Synthesizer, CNC G-Code Plotter & Interactive Studio (design influenced by Material 3 tokens)
