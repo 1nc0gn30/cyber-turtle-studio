@@ -998,24 +998,17 @@ def cmd_serve(args: argparse.Namespace, styler: Styler) -> int:
     """Launch the Cyber Turtle Studio Web UI (design influenced by Material 3 tokens)."""
     host = args.host
     port = args.port
-    server_address = (host, port)
 
     print(styler.header("Cyber Turtle Studio — Web Deck"))
     print(f"  {styler.badge('PORT', f'http://{host}:{port}')}")
     print(f"  {styler.badge('STATUS', 'Interactive Web UI & Realtime SVG Live Stage Ready')}")
     print(f"  {styler.dim('Press Ctrl+C to terminate the local web server.')}\n")
 
-    httpd = http.server.ThreadingHTTPServer(server_address, StudioHTTPRequestHandler)
-
-    if args.browser:
-        threading.Timer(0.5, lambda: webbrowser.open(f"http://{host}:{port}")).start()
-
+    from .ui_server import start_server
     try:
-        httpd.serve_forever()
+        start_server(host=host, port=port, open_browser=bool(args.browser))
     except KeyboardInterrupt:
         print(styler.cyan("\n[SHUTDOWN] Studio web server stopped gracefully."))
-    finally:
-        httpd.server_close()
     return 0
 
 

@@ -37,7 +37,7 @@
         "description": "Sovereign in-browser L-System fractal synthesizer, turtle geometry studio, and CNC pen-plotter G-Code and SVG vector exporter.",
         "offers": {
           "@type": "Offer",
-          "price": "19.00",
+          "price": "0",
           "priceCurrency": "USD",
           "priceValidUntil": "2027-12-31",
           "availability": "https://schema.org/InStock",
@@ -75,10 +75,10 @@
           },
           {
             "@type": "Question",
-            "name": "What payment rails are accepted for the Pro license?",
+            "name": "Is Cyber Turtle Studio free to use?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "We accept major credit cards, Apple Pay, and Google Pay via Stripe ($19 founding lifetime) and cryptocurrency via Solana DePay."
+              "text": "Yes. Cyber Turtle Studio is 100% free, open-source, and unlocked by default. Optional tips and support are welcomed via Stripe Buy Us a Coffee and Solana."
             }
           }
         ]
@@ -86,8 +86,6 @@
     ]
   }
   </script>
-  <script src="https://integrate.depay.com/widgets/v13.js" defer></script>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto+Mono:wght@400;500;600&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -696,7 +694,7 @@
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(4px);
+      backdrop-filter: none;
       z-index: 1000;
       display: none;
       align-items: center;
@@ -811,22 +809,46 @@
   </style>
   
   <link rel="stylesheet" href="zoth-theme.css">
+
+  <!-- Zoth 100% Open-Access & Buy Us a Coffee Invariant -->
+  <script id="zoth-open-access-init">
+    (function() {
+      try {
+        var keys = ['agent_audiocipher_pro', 'agent_cyber_turtle_pro', 'agent_datamosh_pro', 'agent_nexus3d_pro', 'agent_policy_pro', 'audiocipher_license', 'audiocipher_pro_licensed', 'badge3d_pro_licensed', 'certpath_pro_key', 'certpath_pro_licensed', 'cron_rhythm_pro_key', 'cron_rhythm_pro_licensed', 'cwv-speed-engine_pro_licensed', 'cwv_pro_licensed', 'cyber_turtle_pro_licensed', 'datamosh_pro_licensed', 'deepsearch-research-agent_pro_licensed', 'deepsearch_pro_licensed', 'entropy_studio_licensed', 'envguard-secrets-vault_pro_licensed', 'envguard_pro_license', 'etsy_connector_pro', 'jwt_guard_licensed', 'mdg_pro_licensed', 'neuro_pro_licensed', 'nexus3d_pro_licensed', 'omnipost_pro_key', 'omnipost_pro_licensed', 'osint_pro_licensed', 'payload-entropy-studio_pro_licensed', 'polyglot_pro_licensed', 'pro_licensed', 'promptmaster_pro_licensed', 'promptmaster_pro_active', 'robots-txt-auditor_pro_licensed', 'robots_pro_licensed', 'schema_illustrator_pro_licensed', 'sovereign_pro_licensed', 'subsweep-lead-scanner_pro_licensed', 'subsweep_licensed', 'turtle_pro_licensed', 'ufo_sacred_licensed', 'vector-search-engine_pro_licensed', 'vector_studio_pro_licensed', 'web-security-guard_pro_licensed', 'web_security_guard_licensed', 'yourdigitalspace_pro', 'zela_guide_pro_licensed', 'zoth_ascii_magic_pro', 'zoth_audiocipher_licensed', 'zoth_badge3d_licensed', 'zoth_cyber_turtle_licensed', 'zoth_datamosh_licensed', 'zoth_etsy_licensed', 'zoth_nexus3d_licensed', 'zoth_osint_licensed', 'zoth_policy_licensed', 'zoth_sacred_licensed', 'zoth_ufo_licensed'];
+        for (var i = 0; i < keys.length; i++) {
+          localStorage.setItem(keys[i], 'true');
+        }
+        localStorage.setItem('pm_license_v2', JSON.stringify({ method: 'open_access', ref: 'free_forever', at: '2026-01-01T00:00:00Z' }));
+        window.isPro = true;
+        window.isProLicensed = true;
+      } catch (e) {}
+    })();
+  </script>
+  <style id="zoth-open-access-override">
+    .paywall-overlay, .output-paywall-overlay, #outputPaywallOverlay, #schemaPaywallOverlay,
+    #transformerPaywallOverlay, #proPaywallModal, #licenseModal, #salesBanner, #founding-offer-banner,
+    #funnelHeroBanner, [data-alias="paywallOverlay"], [data-alias="founding-offer-banner"] {
+      display: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    .paywall-wrap #outputPreview, .paywall-wrap #reportContentArea, .paywall-content,
+    .paywall-content.locked, .paywall-wrap.is-locked #outputPreview, .paywall-wrap.locked #outputPreview {
+      filter: none !important;
+      -webkit-filter: none !important;
+      user-select: auto !important;
+      pointer-events: auto !important;
+    }
+  </style>
+
 </head>
 <body>
-<aside class="sales-funnel-banner" id="salesBanner" style="background: linear-gradient(90deg, rgba(212,175,55,0.15) 0%, rgba(0,255,136,0.15) 50%, rgba(153,69,255,0.15) 100%); border-bottom: 1px solid rgba(212,175,55,0.3); backdrop-filter: blur(12px); padding: 0.65rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; position: sticky; top: 0; z-index: 100; font-family: var(--font-mono); font-size: 0.78rem;">
-  <div style="display:flex; align-items:center; gap:0.5rem; color:#f4f4f5;">
-    <span style="background:rgba(255,23,68,0.2); border:1px solid #ff1744; color:#ff1744; padding:0.15rem 0.45rem; border-radius:4px; font-weight:700; font-size:0.7rem;">FOUNDING COHORT</span>
-    <span><strong>CYBER TURTLE PRO</strong> // Lifetime License:</span>
-    <span style="text-decoration:line-through; color:#71717a;">$79.00</span>
-    <span style="color:#d4af37; font-weight:800; font-size:0.95rem;">$19.00 USD</span>
-    <span style="color:#a1a1aa;">· Instant Key Activation</span>
-  </div>
-  <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
-    <a href="https://buy.stripe.com/4gMfZg9AheOsdhKbcAfw40L" target="_blank" rel="noopener" style="background:#635bff; color:#fff; padding:0.35rem 0.85rem; border-radius:4px; text-decoration:none; font-weight:700; font-family:var(--font-google); font-size:0.75rem;">Credit Card / Apple Pay ($19)</a>
-    <button type="button" onclick="openDePayCheckout()" style="background:#9945ff; color:#fff; border:none; padding:0.35rem 0.85rem; border-radius:4px; font-weight:700; font-family:var(--font-google); font-size:0.75rem; cursor:pointer;">Pay with Solana ($19)</button>
-    <button type="button" onclick="openPaywallModal('License Key Activation')" style="background:transparent; border:1px solid rgba(212,175,55,0.4); color:#d4af37; padding:0.35rem 0.75rem; border-radius:4px; font-size:0.75rem; font-family:var(--font-google); cursor:pointer;">Have a key? Activate</button>
-  </div>
-</aside>
+
+<div id="zoth-coffee-support-bar" style="background: linear-gradient(90deg, rgba(16,185,129,0.12), rgba(212,175,55,0.14)); border-bottom: 1px solid rgba(212,175,55,0.35); padding: 8px 16px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12px; z-index: 9999;">
+  <span style="color: #10B981; font-weight: 800;">✦ 100% FREE &amp; OPEN ACCESS · ZERO PAYWALLS</span>
+  <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener noreferrer" style="background: #D4AF37; color: #08080B; padding: 4px 12px; border-radius: 6px; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">☕ Buy Us a Coffee (Stripe)</a>
+  <a href="solana:GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK" onclick="if(navigator.clipboard){navigator.clipboard.writeText('GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK');this.textContent='✓ Copied GG2eQb...dXoK!';}" style="background: rgba(20,241,149,0.15); color: #14F195; border: 1px solid rgba(20,241,149,0.45); padding: 4px 12px; border-radius: 6px; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">◎ Solana Tip (GG2e...dXoK)</a>
+</div>
 
 <!-- Top App Bar -->
   <header class="studio-header">
@@ -836,13 +858,14 @@
         <div class="brand-title">
           Cyber Turtle Studio
           <span class="brand-badge">v2.5 SOVEREIGN</span>
-          <span id="licenseBadge" class="brand-badge" style="border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: #a1a1aa; font-weight: 700; margin-left: 6px;">⚡ FREE TIER</span>
+          <span id="licenseBadge" class="brand-badge" style="border: 1px solid rgba(16,185,129,0.35); background: rgba(16,185,129,0.15); color: #10b981; font-weight: 700; margin-left: 6px;">✦ 100% OPEN ACCESS</span>
         </div>
       </div>
     </div>
 
     <!-- Mode Selector & Preset Dropdown -->
     <div class="header-actions">
+      <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener noreferrer" style="background: #D4AF37; color: #08080B; padding: 6px 14px; border-radius: 6px; font-weight: 800; text-decoration: none; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; margin-right: 8px;">☕ Buy Us a Coffee</a>
       <div class="segmented-control">
         <button class="segmented-item active" id="btn-mode-lsystem" onclick="setMode('lsystem')">L-System Grammar</button>
         <button class="segmented-item" id="btn-mode-logo" onclick="setMode('logo')">Logo DSL Script</button>
@@ -1051,18 +1074,6 @@ repeat 36 [
           </label>
           <div style="position: relative;">
             <div class="gcode-viewer" id="gcode-preview">; G-Code program ready to stream...</div>
-            <div id="gcodePaywallOverlay" style="position: absolute; inset: 0; background: rgba(8, 12, 16, 0.82); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; z-index: 10; padding: 14px; text-align: center; border: 1.5px solid rgba(212,175,55,0.4);">
-              <span style="font-size: 22px;">🔒</span>
-              <strong style="color: #d4af37; font-size: 13px; font-family: var(--font-google);">Pro CNC Toolpath Paywall</strong>
-              <p style="margin: 0; font-size: 11px; color: #a1a1aa; max-width: 220px; line-height: 1.4;">
-                Full G0/G1 machine stream and vector downloads locked on free tier.
-              </p>
-              <div style="display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; justify-content: center;">
-                <a href="https://buy.stripe.com/4gMfZg9AheOsdhKbcAfw40L" target="_blank" rel="noopener" style="background: #1a73e8; color: #fff; padding: 5px 12px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: 700;">Card ($19)</a>
-                <button type="button" onclick="openDePayCheckout()" style="background: #14F195; color: #000; border: none; padding: 5px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; cursor: pointer;">Solana</button>
-                <button type="button" onclick="openPaywallModal('Pro Toolpath Unlock')" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer;">Key</button>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -1823,19 +1834,11 @@ repeat 36 [
     }
 
     function downloadGCode() {
-      if (!isProLicensed) {
-        openPaywallModal('CNC Plotter G-Code (.gcode) Export');
-        return;
-      }
       const gcode = document.getElementById('gcode-preview').innerText;
       downloadFile(gcode, 'drawing.gcode', 'text/plain');
     }
 
     function downloadSVG(animated = false) {
-      if (!isProLicensed) {
-        openPaywallModal(animated ? 'Animated Vector SVG CAD Export' : 'Static Vector SVG CAD Export');
-        return;
-      }
       const svgEl = document.getElementById('studio-svg-element');
       let svgContent = svgEl.outerHTML;
       if (animated) {
@@ -1845,10 +1848,6 @@ repeat 36 [
     }
 
     function downloadPNG() {
-      if (!isProLicensed) {
-        openPaywallModal('Ultra High-Res Raster PNG Export');
-        return;
-      }
       const svgEl = document.getElementById('studio-svg-element');
       if (!svgEl) return;
       const svgData = new XMLSerializer().serializeToString(svgEl);
@@ -1875,19 +1874,11 @@ repeat 36 [
     }
 
     function copyGCode() {
-      if (!isProLicensed) {
-        openPaywallModal('CNC Machine G-Code Copy');
-        return;
-      }
       navigator.clipboard.writeText(document.getElementById('gcode-preview').innerText);
       showToast('✓ G-Code copied to clipboard!', 'success');
     }
 
     function copyASCIIArt() {
-      if (!isProLicensed) {
-        openPaywallModal('ASCII / Braille Terminal Art Export');
-        return;
-      }
       const ascii = generateBrailleASCII();
       navigator.clipboard.writeText(ascii);
       showToast('✓ ASCII / Braille art copied to clipboard!', 'success');
@@ -1926,7 +1917,7 @@ repeat 36 [
 
     let isProLicensed = isProActive() || window.location.search.includes('licensed=true');
 
-    function checkProLicense() {
+    function checkProLicense() { isProLicensed = true; try { updateProUI(); } catch(e){} return true;
       const urlParams = new URLSearchParams(window.location.search);
       const isParamLicensed = urlParams.get('licensed') === 'true' || urlParams.get('pro') === 'true' || urlParams.get('session_id');
 
@@ -2006,11 +1997,9 @@ repeat 36 [
 
     function openDePayCheckout() {
       if (typeof DePayWidgets !== 'undefined' && DePayWidgets.Payment) {
-        DePayWidgets.Payment({
-          integration: '428790dd-7ad1-407c-8ecf-c048c77a4cb8'
-        });
+        (navigator.clipboard && navigator.clipboard.writeText('GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK'));
       } else {
-        window.open('https://buy.stripe.com/4gMfZg9AheOsdhKbcAfw40L', '_blank');
+        window.open('https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X', '_blank');
       }
     }
 
@@ -2042,48 +2031,5 @@ repeat 36 [
     <div style="margin-top:0.4rem; font-size:0.68rem; color:#52525b;">Repository: <a href="https://github.com/1nc0gn30/cyber-turtle-studio" target="_blank" rel="noopener" style="color:#a1a1aa;">github.com/1nc0gn30/cyber-turtle-studio</a> &middot; 100% In-Browser Computation &middot; Zero Cloud Egress</div>
   </footer>
 
-  <!-- Pro Paywall Modal -->
-  <div id="cyberTurtlePaywallModal" data-alias="paywall-modal" class="pro-paywall-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; padding: 20px;">
-    <div style="background: #111418; border: 1.5px solid rgba(212,175,55,0.4); border-radius: 16px; max-width: 520px; width: 100%; padding: 28px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); font-family: var(--font-google); position: relative; color: #fff;">
-      <button type="button" onclick="closePaywallModal()" style="position: absolute; top: 16px; right: 16px; background: transparent; border: none; font-size: 22px; color: #a1a1aa; cursor: pointer;">&times;</button>
-      <div style="display: inline-block; background: #D4AF37; color: #08080B; font-weight: 800; font-size: 11px; padding: 3px 8px; border-radius: 4px; margin-bottom: 8px; letter-spacing: 0.5px;">PRO FOUNDING ACCESS</div>
-      <h3 style="margin: 0 0 6px 0; font-size: 20px; color: #fff;">Unlock Cyber Turtle Studio Pro</h3>
-      <p style="margin: 0 0 16px 0; font-size: 13px; color: #a1a1aa;">
-        Triggered by: <strong id="paywallFeatureTrigger" style="color: #D4AF37;">CNC Plotter G-Code Export</strong>
-      </p>
-
-      <ul style="list-style: none; padding: 0; margin: 0 0 20px 0; font-size: 13px; color: #f4f4f5; display: flex; flex-direction: column; gap: 8px;">
-        <li>✅ Unlimited CNC G-Code (.gcode toolpath) rapid streaming &amp; downloads</li>
-        <li>✅ High-Resolution Vector SVG &amp; CSS Motion Animated exports</li>
-        <li>✅ 4K Ultra High-Res Raster PNG vector rendering</li>
-        <li>✅ Multi-Machine Profiles: 3-Axis Pen Plotter, M3/M5 Laser Cutter, CNC Mill</li>
-        <li>✅ Pen-Plotter 2-Opt TSP air-travel minimization algorithms</li>
-        <li>✅ Commercial fabrication license &amp; zero-cloud localhost privacy</li>
-      </ul>
-
-      <div style="background: rgba(212,175,55,0.08); border: 1px solid rgba(212,175,55,0.3); border-radius: 10px; padding: 14px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-        <div>
-          <div style="font-size: 11px; color: #d4af37; font-weight: 700;">LIFETIME FOUNDING LICENSE</div>
-          <div style="font-size: 22px; font-weight: 800; color: #fff;">$19 <span style="font-size: 13px; font-weight: 400; text-decoration: line-through; color: #71717a;">$79</span></div>
-        </div>
-        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <a href="https://buy.stripe.com/4gMfZg9AheOsdhKbcAfw40L" target="_blank" rel="noopener noreferrer" style="background: #1a73e8; color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
-            💳 Card / Apple Pay
-          </a>
-          <button type="button" onclick="openDePayCheckout()" style="background: #14F195; color: #000; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
-            ⚡ Solana DePay
-          </button>
-        </div>
-      </div>
-
-      <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
-        <label for="licenseKeyInput" style="display: block; font-size: 11px; color: #a1a1aa; margin-bottom: 6px;">Already have a license key or receipt email?</label>
-        <div style="display: flex; gap: 8px;">
-          <input type="text" id="licenseKeyInput" data-alias="license-key-input" placeholder="TURTLE-PRO-2026 or receipt email" style="flex: 1; background: #1a1e24; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 8px 12px; color: #fff; font-size: 12px; outline: none;">
-          <button id="btnActivateKey" data-alias="activate-key-btn" type="button" onclick="verifyLicenseKey()" style="background: #34A853; color: #fff; border: none; border-radius: 6px; padding: 8px 16px; font-weight: 700; font-size: 12px; cursor: pointer;">Activate</button>
-        </div>
-      </div>
-    </div>
-  </div>
 </body>
 </html>

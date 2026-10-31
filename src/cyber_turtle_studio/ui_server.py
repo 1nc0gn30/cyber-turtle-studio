@@ -207,9 +207,10 @@ class StudioHTTPRequestHandler(SimpleHTTPRequestHandler):
             self._send_json(response)
             return
 
-        elif path in ("/api/stats", "/api/diagnostics", "/api/health"):
+        elif path in ("/health", "/api/health", "/api/stats", "/api/diagnostics"):
             stats = {
-                "status": "healthy",
+                "status": "ok",
+                "healthy": True,
                 "version": __version__,
                 "server": "Cyber Turtle Studio ThreadingHTTPServer",
                 "summary": get_catalog_summary(),

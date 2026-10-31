@@ -346,13 +346,13 @@ cyber-turtle-studio/
 
 ---
 
-## 💰 Monetization & Pro Access
+## 💎 100% Free & Open Access (Zero Paywalls)
 
-Cyber Turtle Studio provides an interactive L-System canvas and preset library for free. Advanced CNC machine manufacturing features (G-code rapid streaming, high-res vector SVG exports, 4K raster PNG downloads, and laser modulation controls) are protected by a client-side Pro license:
-- **Founding Lifetime License**: $19 (Regular $79)
-- **Instant Credit Card / Apple Pay / Google Pay**: [Stripe Checkout](https://buy.stripe.com/7sI7sA8hM2X8eFG8ww)
-- **Web3 Crypto Checkout**: Solana DePay (`428790dd-7ad1-407c-8ecf-c048c77a4cb8`)
-- **1-Click Unlock**: Automatically activates via URL parameter (`?licensed=true`) or receipt email/key verification, permanently persisting to `localStorage`.
+Cyber Turtle Studio is **100% free, open, and unlocked by default**. All mathematical fractal synthesizers, CNC G-Code toolpath streams, animated vector SVG exports, 2-Opt TSP air-travel minimizations, and Logo scripting features run without paywalls, license locks, or action interceptors:
+- **100% Client-Side In-Browser Computation**: Generates geometric ASTs, L-System parallel rewrites, and G-Code directly inside the browser using modern Web APIs with zero external cloud egress.
+- **Optional Community Support Architecture**:
+  - **☕ Buy Us a Coffee (Stripe)**: [https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X](https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X)
+  - **◎ Solana Tip Address**: `GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK` (`solana:GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK`)
 
 ---
 
