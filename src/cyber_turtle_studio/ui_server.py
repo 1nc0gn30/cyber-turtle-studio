@@ -209,7 +209,7 @@ class StudioHTTPRequestHandler(SimpleHTTPRequestHandler):
 
         elif path in ("/health", "/api/health", "/api/stats", "/api/diagnostics"):
             stats = {
-                "status": "ok",
+                "status": "healthy" if path in ("/api/stats", "/api/diagnostics") else "ok",
                 "healthy": True,
                 "version": __version__,
                 "server": "Cyber Turtle Studio ThreadingHTTPServer",

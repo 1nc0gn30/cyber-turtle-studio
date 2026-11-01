@@ -989,7 +989,7 @@ def cmd_ascii(args: argparse.Namespace, styler: Styler) -> int:
         ast.title = "ASCII Art"
 
     mode = "ascii" if args.mode == "ascii" else "braille"
-    text_art = export_ascii(ast, width=args.width, height=args.height, mode=mode)
+    text_art = export_ascii(ast, width=args.width, height=args.height, mode=mode, use_color=styler.enabled)
     print(text_art)
     return 0
 

@@ -43,13 +43,13 @@
           "availability": "https://schema.org/InStock",
           "seller": {
             "@type": "Organization",
-            "name": "Neal Frazier Tech",
-            "url": "https://nealfrazier.tech"
+            "name": "1nc0gn30 • NullAI",
+            "url": "https://nullai.tech"
           }
         },
         "author": {
           "@type": "Person",
-          "name": "Neal Frazier",
+          "name": "1nc0gn30",
           "alternateName": "1nc0gn30",
           "url": "https://github.com/1nc0gn30"
         }
@@ -784,7 +784,12 @@
       width: 100% !important;
     }
     @media (max-width: 768px) {
-      .studio-header {
+      body {
+        height: auto !important;
+        overflow-y: auto !important;
+      }
+      header.studio-header {
+        height: auto !important;
         flex-direction: column !important;
         align-items: flex-start !important;
         gap: 12px !important;
@@ -794,16 +799,25 @@
         flex-wrap: wrap !important;
         width: 100% !important;
       }
-      .sales-funnel-banner {
+      .studio-body {
         flex-direction: column !important;
-        align-items: stretch !important;
+        height: auto !important;
+        overflow: visible !important;
       }
-      .app-layout {
-        flex-direction: column !important;
+      .panel-center {
+        min-height: 440px !important;
       }
       .panel-left, .panel-right {
         width: 100% !important;
         max-width: 100% !important;
+        border-right: none !important;
+        border-left: none !important;
+      }
+      footer.studio-footer {
+        height: auto !important;
+        flex-wrap: wrap !important;
+        padding: 8px 12px !important;
+        gap: 8px !important;
       }
     }
   </style>
@@ -1907,102 +1921,6 @@ repeat 36 [
       document.getElementById('server-status-dot').style.background = 'var(--md-success)';
     }
 
-    function isProActive() {
-      return localStorage.getItem('cyber_turtle_pro_licensed') === 'true' ||
-             localStorage.getItem('zoth_cyber_turtle_licensed') === 'true' ||
-             localStorage.getItem('turtle_pro_licensed') === 'true' ||
-             localStorage.getItem('agent_cyber_turtle_pro') === 'true' ||
-             localStorage.getItem('pro_licensed') === 'true';
-    }
-
-    let isProLicensed = isProActive() || window.location.search.includes('licensed=true');
-
-    function checkProLicense() { isProLicensed = true; try { updateProUI(); } catch(e){} return true;
-      const urlParams = new URLSearchParams(window.location.search);
-      const isParamLicensed = urlParams.get('licensed') === 'true' || urlParams.get('pro') === 'true' || urlParams.get('session_id');
-
-      if (isParamLicensed) {
-        localStorage.setItem('cyber_turtle_pro_licensed', 'true');
-        localStorage.setItem('zoth_cyber_turtle_licensed', 'true');
-        localStorage.setItem('turtle_pro_licensed', 'true');
-        localStorage.setItem('agent_cyber_turtle_pro', 'true');
-        localStorage.setItem('pro_licensed', 'true');
-        isProLicensed = true;
-        if (window.history && window.history.replaceState) {
-          window.history.replaceState({}, document.title, window.location.pathname);
-        }
-      } else if (isProActive()) {
-        isProLicensed = true;
-      }
-
-      const licenseBadge = document.getElementById('licenseBadge');
-      if (licenseBadge) {
-        if (isProLicensed) {
-          licenseBadge.innerText = '⭐ PRO ACTIVE';
-          licenseBadge.style.background = '#10B981';
-          licenseBadge.style.color = '#08080B';
-          licenseBadge.style.border = '1px solid #10B981';
-          licenseBadge.style.boxShadow = '0 0 10px rgba(16, 185, 129, 0.4)';
-        } else {
-          licenseBadge.innerText = '⚡ FREE TIER';
-          licenseBadge.style.border = '1px solid rgba(255,255,255,0.2)';
-          licenseBadge.style.background = 'rgba(255,255,255,0.06)';
-          licenseBadge.style.color = '#a1a1aa';
-          licenseBadge.style.boxShadow = 'none';
-        }
-      }
-
-      const banner = document.getElementById('salesBanner');
-      if (banner && isProLicensed) {
-        banner.style.display = 'none';
-      }
-      const overlay = document.getElementById('gcodePaywallOverlay');
-      if (overlay && isProLicensed) {
-        overlay.style.display = 'none';
-      }
-    }
-
-    function openPaywallModal(feature = 'Pro Feature') {
-      const modal = document.getElementById('cyberTurtlePaywallModal') || document.getElementById('licenseModal');
-      const featText = document.getElementById('paywallFeatureTrigger');
-      if (featText) featText.textContent = feature;
-      if (modal) modal.style.display = 'flex';
-    }
-
-    function closePaywallModal() {
-      const modal = document.getElementById('cyberTurtlePaywallModal') || document.getElementById('licenseModal');
-      if (modal) modal.style.display = 'none';
-    }
-
-    function verifyLicenseKey(providedKey) {
-      const input = document.getElementById('licenseKeyInput') || document.getElementById('license-input');
-      const val = (providedKey || (input ? input.value : '')).trim();
-      if (!val || val.length < 3) {
-        showToast('Please enter a valid license key or receipt email.', 'warning');
-        return false;
-      }
-      localStorage.setItem('cyber_turtle_pro_licensed', 'true');
-      localStorage.setItem('zoth_cyber_turtle_licensed', 'true');
-      localStorage.setItem('turtle_pro_licensed', 'true');
-      localStorage.setItem('agent_cyber_turtle_pro', 'true');
-      localStorage.setItem('pro_licensed', 'true');
-      localStorage.setItem('turtle_pro_key', val);
-      isProLicensed = true;
-      checkProLicense();
-      closePaywallModal();
-      showToast('⭐ Pro License activated! Unlimited CNC G-Code & Vector exports unlocked.', 'success');
-      return true;
-    }
-    window.activateLicenseKey = verifyLicenseKey;
-
-    function openDePayCheckout() {
-      if (typeof DePayWidgets !== 'undefined' && DePayWidgets.Payment) {
-        (navigator.clipboard && navigator.clipboard.writeText('GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK'));
-      } else {
-        window.open('https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X', '_blank');
-      }
-    }
-
     function openPresetModal() { document.getElementById('modal-presets').classList.add('open'); }
     function closePresetModal() { document.getElementById('modal-presets').classList.remove('open'); }
     function openDocsModal() { document.getElementById('modal-docs').classList.add('open'); }
@@ -2020,16 +1938,13 @@ repeat 36 [
       }
       runSynthesis();
     }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      checkProLicense();
-    });
   </script>
   
   <footer style="border-top:1px solid rgba(255,255,255,0.08); padding:1.5rem 1rem; text-align:center; font-family:var(--font-mono); font-size:0.75rem; color:#71717a;">
-    <div>Engineered by <strong>Neal Frazier Tech</strong> (<a href="https://github.com/1nc0gn30" target="_blank" rel="noopener" style="color:#d4af37; text-decoration:none;">@1nc0gn30</a>) &bull; <a href="https://nullai.tech" target="_blank" rel="noopener" style="color:#d4af37; text-decoration:none;">NullAI Platform</a></div>
+    <div>Engineered by <strong>1nc0gn30 • NullAI</strong> (<a href="https://github.com/1nc0gn30" target="_blank" rel="noopener" style="color:#d4af37; text-decoration:none;">@1nc0gn30</a>) &bull; <a href="https://nullai.tech" target="_blank" rel="noopener" style="color:#d4af37; text-decoration:none;">NullAI Platform</a></div>
     <div style="margin-top:0.4rem; font-size:0.68rem; color:#52525b;">Repository: <a href="https://github.com/1nc0gn30/cyber-turtle-studio" target="_blank" rel="noopener" style="color:#a1a1aa;">github.com/1nc0gn30/cyber-turtle-studio</a> &middot; 100% In-Browser Computation &middot; Zero Cloud Egress</div>
   </footer>
 
+  <script src="/assets/sovereign-upgrade.js" defer></script>
 </body>
 </html>

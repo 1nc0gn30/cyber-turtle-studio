@@ -368,5 +368,5 @@ Cyber Turtle Studio is **100% free, open, and unlocked by default**. All mathema
 
 Distributed under the **MIT License**. See `LICENSE` for details.
 
-Engineered by **Neal Frazier** ([@1nc0gn30](https://github.com/1nc0gn30)) • **Neal Frazier Tech** • [NullAI Platform](https://nullai.tech)
+Engineered by **1nc0gn30** ([@1nc0gn30](https://github.com/1nc0gn30)) • **1nc0gn30 • NullAI** • [NullAI Platform](https://nullai.tech)
 
