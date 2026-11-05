@@ -1945,6 +1945,22 @@ repeat 36 [
     <div style="margin-top:0.4rem; font-size:0.68rem; color:#52525b;">Repository: <a href="https://github.com/1nc0gn30/cyber-turtle-studio" target="_blank" rel="noopener" style="color:#a1a1aa;">github.com/1nc0gn30/cyber-turtle-studio</a> &middot; 100% In-Browser Computation &middot; Zero Cloud Egress</div>
   </footer>
 
-  <script src="/assets/sovereign-upgrade.js" defer></script>
+  
+
+  <script src="/sovereign_tutorial.js"></script>
+  <script>
+    window.addEventListener("DOMContentLoaded", function() {
+      if (window.createSovereignTutorial) {
+        window.createSovereignTutorial({
+          toolId: "cyber-turtle-studio",
+          toolName: "Cyber Turtle Studio",
+          tagline: "Live procedural vector turtle graphics and cyberpunk geometry canvas!",
+          accentColor: "#06B6D4",
+          steps: [{"icon": "\ud83d\udc22", "title": "Draw with Turtle Code", "desc": "Command a robotic digital turtle to walk, spin, and paint stunning neon geometric patterns on canvas!"}, {"icon": "\ud83c\udf00", "title": "Fractals & Sacred Geometry", "desc": "Explore infinite spirals, snowflakes, and cyberpunk wireframes with simple mathematical loops."}, {"icon": "\ud83c\udfa8", "title": "Export Crisp SVG Vectors", "desc": "Download infinite-resolution vector files ready for laser engraving, 3D printing, or digital art."}]
+        });
+      }
+    });
+  </script>
+
 </body>
 </html>
