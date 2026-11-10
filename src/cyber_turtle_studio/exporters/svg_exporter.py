@@ -178,7 +178,7 @@ class SVGExporter:
         curr_opacity: float = 1.0
 
         def flush_current() -> None:
-            nonlocal current_pts, curr_color, curr_width, curr_opacity
+            nonlocal current_pts
             if len(current_pts) >= 2:
                 # Calculate approximate length for animation keyframe calculation
                 path_len = 0.0
