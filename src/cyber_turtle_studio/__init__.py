@@ -159,8 +159,8 @@ def generate_lsystem(
     return _raw_generate_lsystem(cfg, iterations=iterations, seed=seed, palette=palette)
 
 
-__version__ = "0.1.0"
-__author__ = "Cyber Turtle Studio Team"
+__version__ = "2.5.0"
+__author__ = "1nc0gn30"
 __license__ = "MIT"
 
 __all__ = [

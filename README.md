@@ -1,428 +1,149 @@
-<div align="center">
-  <img src="assets/hero-banner.svg" alt="Cyber Turtle Studio — Sovereign Architecture Banner" width="100%" />
-</div>
+<p align="center">
+  <img src="assets/hero-banner.svg" alt="Cyber Turtle Studio" width="100%">
+</p>
 
-<br />
+# Cyber Turtle Studio
 
-<div align="center">
+Pure-Python Logo DSL interpreter, Lindenmayer System (L-System) fractal grammar synthesizer, Truchet/maze generator, 2-Opt TSP pen-plotter toolpath optimizer, multi-format exporter (SVG, CNC G-Code, Unicode Braille/ASCII), and JSON-RPC 2.0 MCP server.
 
-# 🐢 Cyber Turtle Studio
-### High-Precision Turtle Graphics, L-System Fractal Synthesizer, CNC G-Code Plotter & Interactive Studio (design influenced by Material 3 tokens)
+- **Version**: `2.5.0`
+- **Local Workstation Port**: `127.0.0.1:8129`
+- **Zoth Studio Dossier**: [https://zoth.nullai.tech/tools/cyber-turtle-studio](https://zoth.nullai.tech/tools/cyber-turtle-studio)
+- **Author**: [1nc0gn30](https://1nc0gn30.si) (`@1nc0gn30`) · [NullAI](https://nullai.tech)
 
-[![Live App](https://img.shields.io/badge/Live%20App-cyber--turtle--studio.netlify.app-00C7B7.svg?style=flat&logo=netlify)](https://cyber-turtle-studio.netlify.app/)
-[![Dual Rails](https://img.shields.io/badge/Checkout%20Rails-Stripe%20%2B%20Solana-14F195.svg)](#monetization--pro-access)
-[![Headless Verification](https://img.shields.io/badge/Headless%20Verification-100%25%20PASS-brightgreen.svg)](#verification)
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Zero Dependencies](https://img.shields.io/badge/dependencies-0%20runtime-success.svg)](https://github.com/1nc0gn30/cyber-turtle-studio)
-[![MCP Protocol](https://img.shields.io/badge/MCP-JSON--RPC%202.0-8a2be2.svg)](https://modelcontextprotocol.io/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+## Overview
 
-*A sovereign, zero-dependency, pure Python geometry engine and Interactive Studio (design influenced by Material 3 tokens) for recursive generative art, Lindenmayer system botany, mathematical fractals, animated vector SVGs, and physical CNC pen-plotter G-Code manufacturing.*
+`cyber-turtle-studio` executes algorithmic vector geometry using only the Python 3 standard library. It compiles recursive Logo procedures (`to ... end`, `repeat`, `push`/`pop`, `circle`, polygon fills), formal L-System rewriting rules (Koch, Dragon, Hilbert, Gosper, Barnsley Fern, stochastic branching), spirographs/harmonographs, Truchet tilings (`arcs`, `diagonal`, `concentric_arcs`, `cross_line`), and solvable labyrinths (`recursive_backtracker`, `wilson`, `braided`) into normalized `DrawingAST` intermediate representations.
 
----
+Core capabilities:
+- **Multi-Format Vector & CAM Exporters**: Themeable static or CSS stroke-animated SVGs, GRBL/Marlin CNC G-Code (`G0`/`G1` Z-axis pen lift or `M3`/`M5` laser mode), and 2x4 sub-pixel Unicode Braille (`U+2800..U+28FF`) terminal canvases.
+- **2-Opt TSP Toolpath Optimizer**: Merges contiguous polylines, evaluates bidirectional reversals, and minimizes rapid pen-up air-travel distance for AxiDraw and CNC plotters.
+- **Preset Registry**: 25+ categorized mathematical and botanical presets filterable by category, difficulty, and tags.
+- **Dual Runtime**: Local browser workstation (`127.0.0.1:8129`) and stdio MCP server exposing 9 tools, 2 workflow prompts, and grammar resources.
 
-</div>
+## Architecture
 
-## 🌟 Highlights & Capabilities
-
-- **Zero Runtime Dependencies**: 100% Pure Python standard library implementation compatible with Python 3.9 through 3.13 on Linux, macOS, Windows, and Termux.
-- **High-Precision 2D Vector Turtle Interpreter**: Arbitrary step precision, heading calculations, state stacks, circle/arc interpolations, dot primitives, and polygon fills.
-- **Extensible Logo DSL Script Engine**: Full mini-language interpreter supporting loops (`repeat`), nested blocks, variables (`make`), custom procedures (`to ... end`), mathematical expressions, and comment syntax.
-- **Lindenmayer System (L-System) Fractal Synthesizer**: Deterministic and stochastic production rules, parametric branching stack trees (`[` and `]`), step scaling (`<` and `>`), and 28+ built-in mathematical fractals.
-- **Multi-Format Exporters**:
-  - **Animated Vector SVG**: Interactive CSS keyframe stroke-dasharray animations and 6 visual palettes (`cyber_matrix`, `retro_amber`, `blueprint_cyan`, `sacred_gold`, `light_minimal`, `monochrome`).
-  - **CNC Pen-Plotter & Laser G-Code**: High-speed G0 travel, G1 drawing feeds, Z-axis servo/stepper heights, laser power modulation (`M3`/`M5`), bed auto-fitting, and motor controls.
-  - **High-Resolution Terminal Braille**: 2x4 subpixel Unicode Braille matrix rendering (`U+2800`..`U+28FF`) with 24-bit TrueColor ANSI styling.
-- **Cyber Turtle Studio Web App** (Design influenced by Material 3 tokens): Responsive dual-mode editor, real-time SVG viewport, zoom/pan controls, animated step-scrubber playback engine, and CNC plotter drawer.
-- **Model Context Protocol (MCP) Server**: Full JSON-RPC 2.0 stdio server providing AI agents (Claude Desktop, Cursor, Cline, Roo Code) with direct tool calls, grammar documentation, and plotter workflow prompts.
-
----
-
-## 📐 Mathematical Foundations of L-Systems
-
-A **Lindenmayer System (L-System)** is a parallel string rewriting formal grammar introduced by biologist Astrid Lindenmayer in 1968 to model the growth processes of plant cells and fractal geometry.
-
-An L-System is formally defined as a tuple:
-
-$$G = (V, \omega, P)$$
-
-where:
-1. **$V$ (Alphabet)**: The set of formal symbols containing terminal symbols (e.g. `F`, `+`, `-`, `[`, `]`) and non-terminal variables (e.g. `X`, `Y`).
-2. **$\omega \in V^+$ (Axiom / Seed)**: An initial non-empty string defining the starting state of the system.
-3. **$P \subset V \times V^*$ (Production Rules)**: A mapping specifying how predecessor symbols are replaced in parallel across successive iteration generations $N$.
-
-### Turtle Interpretation Mapping
-
-| Symbol | Turtle Graphics Action |
-| :--- | :--- |
-| `F`, `G`, `A`, `B` | Move forward by `step_size` drawing a line segment ($\text{pen\_down} = \text{True}$). |
-| `f` | Move forward by `step_size` without drawing ($\text{pen\_down} = \text{False}$). |
-| `+` | Turn right (clockwise) by branching angle $\theta$. |
-| `-` | Turn left (counter-clockwise) by branching angle $\theta$. |
-| `[` | **Push State**: Save current coordinate $(x, y)$, heading angle, and stroke style onto state stack. |
-| `]` | **Pop State**: Restore saved position, heading angle, and stroke style from state stack. |
-| `\|` | Turn 180° around (reverse heading direction). |
-| `<` | Multiply step length by scaling factor (e.g. $0.8\times$). |
-| `>` | Divide step length by scaling factor (e.g. $1.25\times$). |
-
----
-
-## 🎨 Built-In 28+ Fractal Catalog Presets
-
-| Category | Presets Included |
-| :--- | :--- |
-| **Fractals** | Koch Snowflake, Koch Anti-Snowflake, Heighway Dragon Curve, Terdragon, Lévy C Curve, Sierpiński Triangle, Sierpiński Arrowhead, Sierpiński Carpet, Quadratic Koch Island, Box Fractal, Cantor Dust |
-| **Space-Filling Curves** | Hilbert Curve, Moore Curve, Gosper Hexagonal Flowsnake, Peano Curve, E-Curve |
-| **Botany & Plant Growth** | Barnsley Fern, Axial Branching Plant, Delicate Weed Shrub, Pythagoras Tree, Symmetric Bush, 3D Monopodial Tree |
-| **Sacred Geometry & Tiles** | Kolam Vedic Floor Tile, Islamic Star Lattice, Crystal Lattice, Flower of Life Mandala |
-| **Classic Logo DSL** | Star Mandala, Spiral Vortex, Hexagon Matrix, Concentric Polygons |
-
----
-
-## ⌨️ Logo DSL Command Reference
-
-The built-in Logo interpreter parses and executes standard and extended Logo commands:
-
-```logo
-; Cyber Turtle Studio - Star Mandala Sample
-color #00f0ff
-width 2.0
-make "size 100
-
-repeat 36 [
-  repeat 4 [
-    fd :size
-    rt 90
-  ]
-  rt 10
-]
-```
-
-### Supported Syntax:
-- **Movement**: `fd <dist>`, `bk <dist>`, `goto <x> <y>`
-- **Rotation**: `rt <angle_deg>`, `lt <angle_deg>`, `setheading <deg>`
-- **Pen Controls**: `pu` (penup), `pd` (pendown), `color #hex`, `width <px>`, `opacity <0.0-1.0>`
-- **Shapes & Primitives**: `circle <radius> [extent] [steps]`, `dot <size> [color]`
-- **State Branching**: `push` / `pop` (position and heading stack)
-- **Fills**: `begin_fill [color]`, `end_fill`
-- **Control Flow**: `repeat <n> [ <commands> ]` (supports arbitrary nesting)
-- **Variables**: `make "var_name <value>`, `set <var_name> <value>`, `:var_name`
-- **Procedures**: `to <name> [:param1 :param2] ... end`
-
----
-
-## 🖨️ CNC Pen Plotter & Laser Cutter Guidelines
-
-Cyber Turtle Studio generates industrial-grade **RS-274 / ISO G-Code** compatible with GRBL, Marlin, AxiDraw, EleksMaker, and Universal G-Code Sender.
-
-```gcode
-; --------------------------------------------------
-; Generated by Cyber Turtle Studio CNC Engine
-; Title: Koch Snowflake
-; Bed Size: 200.0x200.0 mm
-; --------------------------------------------------
-G21 ; Set units to millimeters
-G90 ; Set positioning to absolute mode
-G28 ; Home all axes
-G0 Z5.000 F3000.0 ; Pen Up Travel
-G0 X10.000 Y10.000 F3000.0
-G1 Z0.000 F1200.0 ; Pen Down Drawing
-G1 X190.000 Y10.000 F1200.0
-G0 Z5.000 F3000.0 ; Pen Up Travel
-G0 X0 Y0 ; Return Home
-M84 ; Disable steppers
-M30 ; Program End
-```
-
-### CNC Plotting Parameters:
-- **`--feed <mm/min>`**: Linear drawing feedrate (default `1200 mm/min`).
-- **`--travel-feed <mm/min>`**: Rapid non-drawing travel feedrate (default `3000 mm/min`).
-- **`--z-up <mm>`**: Pen lift height for safe rapid moves (default `5.0 mm`).
-- **`--z-down <mm>`**: Pen surface contact height (default `0.0 mm`).
-- **`--laser`**: Enables Laser mode (`M3 S255` laser on / `M5` laser off) instead of physical Z-axis pen motions.
-- **`--bed-width <mm>` & `--bed-height <mm>`**: Work envelope constraints (e.g. `200x200 mm`, `300x300 mm`, `A4`, `A3`).
-
----
-
-## 💻 Command Line Interface (CLI) Guide
-
-Install locally in editable mode:
-```bash
-pip install -e .
-```
-
-Both `cyber-turtle-studio` and `cyber-turtle` entry points are available.
-
-### CLI Subcommands Overview:
-
-```bash
-# 1. Execute Logo DSL code directly
-cyber-turtle logo "repeat 36 [ repeat 4 [ fd 100 rt 90 ] rt 10 ]" -o mandala.svg --theme sacred_gold
-
-# 2. Synthesize custom L-System fractal
-cyber-turtle lsystem "F--F--F" -r "F=F+F--F+F" -i 4 -a 60 -o snowflake.svg --theme cyber_matrix --animate
-
-# 3. Generate catalog preset directly
-cyber-turtle generate dragon_curve -i 10 -o dragon.gcode -f gcode
-
-# 4. List all 28+ presets with filtering
-cyber-turtle presets -c Fractals
-cyber-turtle presets --json
-
-# 5. Export CNC G-Code with custom feedrates
-cyber-turtle gcode koch_snowflake -o plot.gcode --feed 1500 --z-up 6.0
-
-# 6. Render direct terminal ASCII / Braille art
-cyber-turtle ascii barnsley_fern -w 80 -H 40 -m braille
-
-# 7. Launch Cyber Turtle Studio Web App (Material 3 influenced)
-cyber-turtle serve --port 8080 --browser
-
-# 8. Run Model Context Protocol (MCP) Server
-cyber-turtle mcp
-
-# 9. System diagnostics report
-cyber-turtle doctor
-
-# 10. Procedural Truchet Tiling (arcs, diagonal, concentric_arcs, cross_line)
-cyber-turtle truchet -r 12 -c 12 -s 40 --style arcs --seed 42 -o truchet.svg --theme cyber_matrix
-
-# 11. Algorithmic Labyrinth Maze with BFS Path Solver
-cyber-turtle maze -r 15 -c 15 --algo recursive_backtracker --seed 1337 --solve -o maze.svg
-cyber-turtle maze -r 10 -c 10 --ascii
-```
-
----
-
-## 🤖 Model Context Protocol (MCP) Integration
-
-Cyber Turtle Studio natively integrates with AI environments via standard JSON-RPC 2.0 over `stdio`.
-
-### Configuration for Claude Desktop
-
-Add to your `claude_desktop_config.json` (`~/.config/Claude/claude_desktop_config.json` on Linux/macOS or `%APPDATA%\Claude\claude_desktop_config.json` on Windows):
-
-```json
-{
-  "mcpServers": {
-    "cyber-turtle-studio": {
-      "command": "python3",
-      "args": [
-        "-m",
-        "cyber_turtle_studio.mcp_server"
-      ]
-    }
-  }
-}
-```
-
-### Configuration for Cursor / Cline / Roo Code
-
-Add to `.cursor/mcp.json` or `.cline/mcp_settings.json`:
-
-```json
-{
-  "mcpServers": {
-    "cyber-turtle": {
-      "command": "cyber-turtle",
-      "args": ["mcp"]
-    }
-  }
-}
-```
-
-### Registered MCP Capabilities:
-- **Tools**:
-  - `turtle_execute_logo`: Execute Logo code and return Drawing AST, statistics, and SVG.
-  - `turtle_generate_lsystem`: Synthesize fractals from axiom, rules, iterations, and turning angle.
-  - `turtle_generate_truchet`: Procedural Truchet tiling generator with multiple aesthetic styles.
-  - `turtle_generate_maze`: Algorithmic labyrinth maze synthesizer with BFS solver.
-  - `turtle_export_svg`: Generate vector SVG with animated CSS stroke effects.
-  - `turtle_export_gcode`: Generate CNC pen-plotter or laser G-Code.
-  - `turtle_presets`: Query catalog presets, categories, and parameters.
-  - `turtle_diagnostics`: Verify multi-OS compatibility and engine health.
-- **Resources**:
-  - `turtle://presets`: Complete catalog metadata and mathematical rules.
-  - `turtle://grammar-guide`: Full grammar symbol reference and Logo cheatsheet.
-- **Prompts**:
-  - `turtle_create_fractal`: Interactive assistant for designing custom growth patterns.
-  - `turtle_plotter_workflow`: Step-by-step setup guidance for physical CNC plotters.
-
----
-
-## 🌐 Cyber Turtle Studio Web App (Material 3 Influenced)
-
-Launch the built-in local studio:
-```bash
-python3 -m cyber_turtle_studio.ui_server --port 8080
-```
-
-### Studio Features:
-- **Material 3 Light Mode Palette**: Influenced by Material 3 design tokens (Google Blue `#1a73e8`, elevation cards, filter chips, and dark mode toggle).
-- **Dual Mode Editor**: Instant switching between Logo DSL live editor and L-System rule table form.
-- **Real-time Canvas & Animated Playback**: Zoom, pan, grid overlay, playback scrubber, and speed controls.
-- **G-Code Plotter Deck**: Live G-Code syntax preview, feedrate inputs, and 1-click `.gcode` / animated `.svg` downloads.
-- **REST APIs**:
-  - `GET /api/presets`: Returns all catalog presets and categories.
-  - `POST /api/execute-logo`: Executes Logo code.
-  - `POST /api/generate-lsystem`: Synthesizes L-System geometry.
-  - `POST /api/generate-preset`: Generates preset drawing.
-  - `GET/POST /api/truchet`: Procedural Truchet tiling synthesis.
-  - `GET/POST /api/maze`: Algorithmic maze labyrinth generator with BFS solver.
-  - `POST /api/export-svg`: Exports static or animated SVG.
-  - `POST /api/export-gcode`: Exports CNC G-Code.
-  - `GET /api/stats`: Diagnostics and system health.
-
----
-
-## 🧪 Comprehensive Test Suite
-
-Run the full pytest suite:
-```bash
-pytest tests/ -v
-```
-
-### Test Coverage:
-- `test_compat.py`: Platform detection, atomic text/byte I/O, path normalization, JSON helpers.
-- `test_models.py`: `Point2D`, `BoundingBox`, `PathSegment`, `TurtleState`, `DrawingAST`, `LSystemConfig`.
-- `test_turtle_engine.py`: Movement, heading, pen styles, state stack, circles/dots, loops, procedures.
-- `test_lsystem_engine.py`: Deterministic & stochastic rewriting, fractal rendering, 28+ built-in presets.
-- `test_truchet_maze.py`: Truchet tilings (arcs/diagonal), maze algorithms (backtracker, Wilson, braided), BFS path solving, ASCII rendering.
-- `test_toolpath_optimizer.py`: Pen-plotter air travel optimization using 2-Opt TSP.
-- `test_spirograph.py`: Epitrochoid and hypotrochoid mathematical curve synthesis.
-- `test_exporters.py`: Vector SVG (static/animated), G-Code (plotter/laser), ASCII/Braille renderers.
-- `test_catalog.py`: Preset registry queries, fuzzy lookup, category filtering, dynamic registration.
-- `test_mcp_server.py`: JSON-RPC 2.0 lifecycle, tools, resources, and prompt templates.
-- `test_cli.py`: All command-line subcommands, argument flags, and format outputs.
-- `test_ui_server.py`: Multi-threaded HTTP server, REST endpoints, CORS headers, 404 handling.
-
----
-
-## 📂 Project Architecture
-
-```
+```text
 cyber-turtle-studio/
-├── .github/
-│   └── workflows/
-│       └── ci.yml                 # Multi-OS CI matrix across Python 3.9-3.13
-├── public/
-│   └── index.html                 # Cyber Turtle Studio UI (Material 3 influenced)
-├── src/
-│   └── cyber_turtle_studio/
-│       ├── __init__.py            # Package root & public exports
-│       ├── catalog.py             # 28+ fractal preset registry & query engine
-│       ├── cli.py                 # Sovereign multi-OS CLI interface
-│       ├── compat.py              # Cross-platform atomic file I/O & OS detection
-│       ├── lsystem_engine.py      # L-System string rewriter & turtle interpreter
-│       ├── mcp_server.py          # Model Context Protocol stdio server
-│       ├── models.py              # Geometry AST, Point2D, BoundingBox models
-│       ├── spirograph.py          # Spirograph epitrochoid & hypotrochoid engine
-│       ├── toolpath_optimizer.py  # 2-Opt TSP pen-plotter travel path optimizer
-│       ├── truchet_maze.py        # Truchet tilings & algorithmic maze synthesizer
-│       ├── turtle_engine.py       # High-precision Turtle interpreter & Logo parser
-│       ├── ui_server.py           # Multi-threaded HTTP REST API server
-│       └── exporters/
-│           ├── __init__.py        # Exporter package interfaces
-│           ├── ascii_exporter.py  # Terminal Braille / ASCII canvas renderer
-│           ├── gcode_exporter.py  # CNC Pen-plotter & Laser G-Code generator
-│           └── svg_exporter.py    # Static & animated SVG vector generator
-├── tests/
-│   ├── conftest.py                # Pytest configuration & test fixtures
-│   ├── test_catalog.py            # Preset catalog tests
-│   ├── test_cli.py                # CLI tests
-│   ├── test_compat.py             # Platform & compat tests
-│   ├── test_exporters.py          # SVG, G-Code, ASCII exporter tests
-│   ├── test_lsystem_engine.py     # L-System synthesis tests
-│   ├── test_mcp_server.py         # MCP server tests
-│   ├── test_models.py             # Data models & geometry tests
-│   ├── test_spirograph.py         # Spirograph tests
-│   ├── test_toolpath_optimizer.py # Toolpath optimizer tests
-│   ├── test_truchet_maze.py       # Truchet & maze labyrinth tests
-│   ├── test_turtle_engine.py      # Turtle engine & Logo parser tests
-│   └── test_ui_server.py          # UI & REST API server tests
-├── pyproject.toml                 # Modern PEP 621 packaging metadata
-└── README.md                      # Comprehensive documentation
+├── bin/cyber-turtle.js                    # Unified Node/ZothOS CLI & desktop launcher
+├── src/cyber_turtle_studio/
+│   ├── turtle_engine.py                   # Logo lexer, recursive procedure parser & TurtleEngine
+│   ├── lsystem_engine.py                  # Parametric/stochastic L-System expander & interpreter
+│   ├── spirograph.py                      # Hypotrochoid, epitrochoid & harmonograph curves
+│   ├── truchet_maze.py                    # Truchet tile generator & BFS-solvable labyrinths
+│   ├── toolpath_optimizer.py              # Nearest-neighbor + 2-Opt TSP air-travel optimizer
+│   ├── exporters/                         # SVGExporter, GCodeExporter & Braille ASCIIExporter
+│   ├── catalog.py                         # PresetRegistry & 25+ algorithmic presets
+│   ├── ui_server.py                       # ThreadingHTTPServer REST API (:8129)
+│   ├── mcp_server.py                      # MCP 2024-11-05 stdio server (9 tools, 2 prompts)
+│   └── cli.py                             # 14-subcommand CLI entry point
+├── public/                                # Interactive browser geometry & G-Code studio
+└── tests/                                 # Pytest unit, CORS origin guard & HTTP/MCP tests
 ```
 
----
+## Quickstart
 
-## 💎 100% Free & Open Access (Zero Paywalls)
-
-Cyber Turtle Studio is **100% free, open, and unlocked by default**. All mathematical fractal synthesizers, CNC G-Code toolpath streams, animated vector SVG exports, 2-Opt TSP air-travel minimizations, and Logo scripting features run without paywalls, license locks, or action interceptors:
-- **100% Client-Side In-Browser Computation**: Generates geometric ASTs, L-System parallel rewrites, and G-Code directly inside the browser using modern Web APIs with zero external cloud egress.
-- **Optional Community Support Architecture**:
-  - **☕ Buy Us a Coffee (Stripe)**: [https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X](https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X)
-  - **◎ Solana Tip Address**: `GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK` (`solana:GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK`)
-
----
-
-## 🛡️ Verification & Headless Validation
-
-- **Triple-Viewport Responsiveness**: Automated headless Chrome verification across Mobile (390x844), Tablet (820x1180), and Desktop (1425x900). 0px horizontal overflow guaranteed.
-- **Pure Client Execution**: 100% in-browser L-System synthesis & Logo execution with zero broken cloud APIs or external backend requirements.
-- **Console Errors**: 0 console errors across all test paths.
-
----
-
-## 📜 License & Attribution
-
-Distributed under the **MIT License**. See `LICENSE` for details.
-
-Engineered by **1nc0gn30** ([@1nc0gn30](https://github.com/1nc0gn30)) • **1nc0gn30 • NullAI** • [NullAI Platform](https://nullai.tech)
-
----
-
-## 🏛️ ZothOS v3.4, Zoth Studio v2 & Obsidian Second Brain Ecosystem
-
-```mermaid
-flowchart LR
-    subgraph ZothOS["🐧 ZothOS v3.4 CLI & Braille TUI"]
-        CLI["cyber-turtle-studio --help / --json"]
-        TUI["cyber-turtle-studio-tui<br/>Unicode U+2800 2x4 Braille"]
-    end
-
-    subgraph Workstation["⚡ Sovereign Workstation"]
-        WEB["https://cyber-turtle-studio.netlify.app<br/>REST API & /health"]
-    end
-
-    subgraph Studio["🌌 Zoth Studio v2 & ZothOS-Lite"]
-        GODMODE["http://127.0.0.1:3000/tools/cyber-turtle-studio<br/>God-Mode Workstation"]
-        LITE["http://127.0.0.1:8145<br/>ZothOS-Lite Web Desktop"]
-    end
-
-    subgraph SecondBrain["💎 Obsidian Second Brain & STDP"]
-        TRACKER["http://127.0.0.1:8151<br/>Zoth Obsidian Tracker"]
-        NEURO["http://127.0.0.1:8094<br/>Neuro-Memory STDP Cortex"]
-        NOTE["Studio/Tools/Studio cyber-turtle-studio.md"]
-    end
-
-    CLI --> WEB
-    TUI --> WEB
-    WEB <--> GODMODE
-    WEB <--> LITE
-    WEB --> TRACKER
-    TRACKER <--> NOTE
-    NOTE <--> NEURO
-```
-
-### Cross-Surface Integration Matrix
-
-| Surface | Endpoint / Binary | Capabilities |
-| :--- | :--- | :--- |
-| **Standalone Workstation** | `https://cyber-turtle-studio.netlify.app` | 100% Free & Open-Access Web Deck, live `/health` & REST telemetry |
-| **Zoth Studio v2 Route** | `http://127.0.0.1:3000/tools/cyber-turtle-studio` | Interactive God-Mode component inside Zoth Studio (`https://zoth.nullai.tech`) |
-| **ZothOS v3.4 CLI & TUI** | `cyber-turtle-studio` / `cyber-turtle-studio-tui` | Global binary in `/usr/local/bin/` with Unicode `U+2800` Braille TUI & `--json` output |
-| **ZothOS-Lite Web Desktop** | `http://127.0.0.1:8145` | Browser-native KDE-style window manager & terminal launcher |
-| **Zoth Obsidian Tracker** | `http://127.0.0.1:8151` | Interactive Obsidian Second Brain vault explorer (`~/Documents/Obsidian Vault/Studio/Tools/Studio cyber-turtle-studio.md`) |
-| **Neuro-Memory STDP Cortex** | `http://127.0.0.1:8094` | 3-Factor STDP synaptic memory daemon & 21-tool MCP server |
+Clone the repository, install in editable mode, and start the local workstation on `127.0.0.1:8129`:
 
 ```bash
-# Inspect CLI & Unicode U+2800 Braille TUI on ZothOS v3.4
-cyber-turtle-studio --help
-cyber-turtle-studio-tui --status
-cyber-turtle-studio-tui --json
+git clone https://github.com/1nc0gn30/cyber-turtle-studio.git
+cd cyber-turtle-studio
+python3 -m pip install -e .
 
-# Verify Second Brain Vault & 12-Step Verification Gallery on :8151
-zoth-obsidian-tracker --verify
+# Start the Web Studio & REST API on 127.0.0.1:8129
+cyber-turtle-studio serve --host 127.0.0.1 --port 8129
 ```
 
+Verify the server health endpoint:
+
+```bash
+curl -s http://127.0.0.1:8129/health
+```
+
+## CLI & MCP Usage
+
+### CLI Subcommands
+
+Installed scripts `cyber-turtle` and `cyber-turtle-studio` (and ZothOS v3.4.0 `/usr/local/bin/cyber-turtle`) expose:
+
+```bash
+# Help & JSON service status
+cyber-turtle-studio --help
+cyber-turtle-studio --status --json
+
+# Execute Logo DSL code to SVG, G-Code, or Braille ASCII
+cyber-turtle-studio logo "repeat 36 [ repeat 4 [ fd 90 rt 90 ] rt 10 ]" -o mandala.svg --animate
+cyber-turtle-studio ascii dragon_curve --mode braille --width 64 --height 28
+
+# Synthesize L-System fractals or catalog presets
+cyber-turtle-studio lsystem FX -r "X=X+YF+,Y=-FX-Y" -i 10 -a 90 -o dragon.svg
+cyber-turtle-studio generate koch_snowflake -f svg -o koch.svg
+cyber-turtle-studio presets --json
+
+# Export pen-plotter / laser G-Code and run 2-Opt TSP optimization
+cyber-turtle-studio gcode hilbert_curve --feed 1500 --z-up 4.0 -o hilbert.gcode
+cyber-turtle-studio optimize --preset dragon_curve --json
+
+# Generate Truchet tilings and BFS-solved labyrinths
+cyber-turtle-studio truchet --rows 12 --cols 12 --style concentric_arcs -o truchet.svg
+cyber-turtle-studio maze --rows 20 --cols 20 --algo wilson --solve --ascii
+
+# Diagnostics & internal self-check
+cyber-turtle-studio diagnostics --json
+cyber-turtle-studio test
+```
+
+### REST API Endpoints (`127.0.0.1:8129`)
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/health`, `/api/health`, `/api/stats` | Health status, version (`2.5.0`), catalog summary, and platform metadata |
+| `GET` | `/api/presets`, `/api/catalog` | Filterable catalog of presets, categories, and tags |
+| `POST` | `/api/execute-logo` | Parse and render Logo script to AST, SVG, and G-Code |
+| `POST` | `/api/generate-lsystem` | Expand and render L-System axiom/rules |
+| `POST` | `/api/generate-preset` | Render a named preset with parameter overrides |
+| `POST` | `/api/export-svg` | Export SVG markup with theme and CSS stroke animation |
+| `POST` | `/api/export-gcode` | Export plotter/laser G-Code with bed bounds and Z/M3 settings |
+| `POST` | `/api/export-ascii` | Render Unicode Braille or ASCII raster preview |
+| `POST` | `/api/optimize-toolpath` | Run 2-Opt TSP rapid-travel reduction and comparison SVG |
+| `GET/POST` | `/api/truchet` | Generate Truchet tiling AST, SVG, and G-Code |
+| `GET/POST` | `/api/maze` | Generate labyrinth AST, BFS solution path, SVG, G-Code, and ASCII |
+
+### MCP Server (`stdio`)
+
+Launch over `stdio` for MCP clients:
+
+```bash
+cyber-turtle-studio mcp
+```
+
+Registered MCP tools (9):
+- `turtle_execute_logo` — Execute Logo DSL script and return AST bounds, SVG, Braille, or G-Code.
+- `turtle_generate_lsystem` — Expand L-System grammar rules into fractal vector geometry.
+- `turtle_export_svg` — Render vector or animated SVG to string or atomic file path.
+- `turtle_export_gcode` — Compile CNC pen-plotter (`Z`) or laser (`M3`/`M5`) G-Code.
+- `turtle_optimize_toolpath` — Minimize rapid travel distance via 2-Opt TSP.
+- `turtle_generate_truchet` — Synthesize deterministic Truchet tile patterns.
+- `turtle_generate_maze` — Generate and solve algorithmic labyrinths.
+- `turtle_presets` — Query the built-in preset catalog.
+- `turtle_diagnostics` — Return runtime and platform diagnostics.
+
+Also provides MCP prompts `turtle_create_fractal` and `turtle_plotter_workflow` and resource `turtle://grammar-guide`.
+
+## Testing & Verification
+
+Run the test suite and CLI checks locally:
+
+```bash
+python3 -m pytest -q
+PYTHONPATH=src python3 -m cyber_turtle_studio.cli --status --json
+```
+
+## Support
+
+Cyber Turtle Studio is 100% free and open-source with zero paywalls. Optional support:
+- [Buy Us a Coffee (Stripe)](https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X)
+
+## License
+
+Released under the [MIT License](LICENSE). Copyright (c) 2026 1nc0gn30 · NullAI ([https://nullai.tech](https://nullai.tech)).

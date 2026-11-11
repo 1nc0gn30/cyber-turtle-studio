@@ -48,3 +48,4 @@ release-artifacts/
 build/*.iso*
 build/live_workspace/
 build/release-*/
+.netlify/

@@ -571,7 +571,7 @@ class StudioHTTPRequestHandler(SimpleHTTPRequestHandler):
             super().log_message(format, *args)
 
 
-def create_server(host: str = "127.0.0.1", port: int = 8085) -> ThreadingHTTPServer:
+def create_server(host: str = "127.0.0.1", port: int = 8129) -> ThreadingHTTPServer:
     """Create and return configured ThreadingHTTPServer instance."""
     server_addr = (host, port)
     return ThreadingHTTPServer(server_addr, StudioHTTPRequestHandler)
@@ -579,11 +579,11 @@ def create_server(host: str = "127.0.0.1", port: int = 8085) -> ThreadingHTTPSer
 
 def start_server(
     host: str = "127.0.0.1",
-    port: int = 8085,
+    port: int = 8129,
     open_browser: bool = False,
     auto_port: bool = True,
 ) -> None:
-    """Start the multi-threaded Cyber Turtle Studio UI server (design influenced by Material 3 tokens)."""
+    """Start the multi-threaded Cyber Turtle Studio UI server."""
     current_port = port
     max_attempts = 10 if auto_port else 1
     httpd: Optional[ThreadingHTTPServer] = None
@@ -601,7 +601,7 @@ def start_server(
         raise RuntimeError(f"Could not bind server to {host}:{port}-{current_port}")
 
     url = f"http://{host}:{current_port}/"
-    print(f"🚀 Cyber Turtle Studio running at: {url}")
+    print(f"Cyber Turtle Studio running at: {url}")
     print("   Press Ctrl+C to stop.")
 
     if open_browser:
@@ -622,7 +622,7 @@ def main() -> None:
     """CLI entry point for running ui_server directly."""
     parser = argparse.ArgumentParser(description="Cyber Turtle Studio UI Server")
     parser.add_argument("--host", default="127.0.0.1", help="Host address to bind (default: 127.0.0.1)")
-    parser.add_argument("--port", type=int, default=8085, help="Port to listen on (default: 8085)")
+    parser.add_argument("--port", type=int, default=8129, help="Port to listen on (default: 8129)")
     parser.add_argument("--no-browser", action="store_true", help="Do not open web browser automatically")
     args = parser.parse_args()
 

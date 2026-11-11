@@ -11,7 +11,7 @@
     "url": "https://github.com/1nc0gn30/cyber-turtle-studio.git"
   },
   "scripts": {
-    "start": "python3 -m http.server 8080 --directory public",
+    "start": "node bin/cyber-turtle.js web",
     "desktop": "electron .",
     "web": "node bin/cyber-turtle.js web",
     "cli": "node bin/cyber-turtle.js",
@@ -29,7 +29,7 @@
     "mcp",
     "sovereign"
   ],
-  "author": "1nc0gn30 (@1nc0gn30) • NullAI Platform",
+  "author": "1nc0gn30 (@1nc0gn30)",
   "license": "MIT",
   "devDependencies": {
     "electron": "^34.5.8"

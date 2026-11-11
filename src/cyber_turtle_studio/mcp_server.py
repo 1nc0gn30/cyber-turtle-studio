@@ -176,7 +176,7 @@ class MCPServer:
 
     def __init__(self) -> None:
         self.name = "cyber-turtle-studio"
-        self.version = "0.1.0"
+        self.version = "2.5.0"
         self.protocol_version = "2024-11-05"
         self.running = False
 

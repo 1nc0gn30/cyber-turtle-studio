@@ -60,7 +60,7 @@ from .truchet_maze import (
 )
 from .turtle_engine import LogoParser, TurtleEngine, execute_logo
 
-__version__ = "0.1.0"
+__version__ = "2.5.0"
 PRESETS = GLOBAL_REGISTRY._presets
 
 
@@ -1309,6 +1309,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("-v", "--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument("--no-color", action="store_true", help="Disable ANSI color output")
     parser.add_argument("-q", "--quiet", action="store_true", help="Suppress non-essential output")
+    parser.add_argument("--status", action="store_true", help="Print service status metadata")
+    parser.add_argument("--json", action="store_true", help="Output service status as JSON when no subcommand is given")
 
     subparsers = parser.add_subparsers(dest="subcommand", title="Commands", help="Available subcommands")
 
@@ -1373,8 +1375,8 @@ def build_parser() -> argparse.ArgumentParser:
     p_asc.add_argument("-H", "--height", type=int, default=30, help="Grid character height")
 
     # 7. serve
-    p_srv = subparsers.add_parser("serve", help="Launch Cyber Turtle Studio Web UI (Material 3 influenced)")
-    p_srv.add_argument("-p", "--port", type=int, default=8085, help="HTTP port (default 8085)")
+    p_srv = subparsers.add_parser("serve", help="Launch Cyber Turtle Studio Web UI")
+    p_srv.add_argument("-p", "--port", type=int, default=8129, help="HTTP port (default 8129)")
     p_srv.add_argument("-H", "--host", default="127.0.0.1", help="Bind host (default 127.0.0.1)")
     p_srv.add_argument("--browser", action="store_true", help="Open default web browser automatically")
 
@@ -1424,7 +1426,30 @@ def build_parser() -> argparse.ArgumentParser:
     p_maze.add_argument("--ascii", action="store_true", help="Render ASCII terminal maze")
     p_maze.add_argument("-a", "--animate", action="store_true", help="Enable CSS stroke animation in SVG")
 
+    # 14. status
+    p_stat = subparsers.add_parser("status", help="Show service status and preset/tool summary")
+    p_stat.add_argument("--json", action="store_true", help="Output JSON metadata")
+
     return parser
+
+
+def cmd_status(as_json: bool = False) -> int:
+    """Print Cyber Turtle Studio status summary."""
+    from .mcp_server import MCPServer
+    mcp = MCPServer()
+    payload = {
+        "service": "cyber-turtle-studio",
+        "version": __version__,
+        "default_host": "127.0.0.1",
+        "default_port": 8129,
+        "preset_count": len(PRESETS),
+        "mcp_tools": [t["name"] for t in mcp.get_tool_definitions()],
+    }
+    if as_json:
+        print(json.dumps(payload, indent=2))
+    else:
+        print(f"cyber-turtle-studio v{__version__} (127.0.0.1:8129) | presets={payload['preset_count']} | mcp_tools={len(payload['mcp_tools'])}")
+    return 0
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
@@ -1435,6 +1460,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     plat = get_platform_info()
     use_color = plat.supports_ansi_color and not args.no_color and "NO_COLOR" not in os.environ
     styler = Styler(enabled=use_color)
+
+    if getattr(args, "status", False) or (getattr(args, "json", False) and not args.subcommand):
+        return cmd_status(as_json=getattr(args, "json", False))
 
     if not args.subcommand:
         parser.print_help()
@@ -1468,6 +1496,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return cmd_truchet(args, styler)
     elif subcmd == "maze":
         return cmd_maze(args, styler)
+    elif subcmd == "status":
+        return cmd_status(as_json=getattr(args, "json", False))
     else:
         parser.print_help()
         return 1
