@@ -123,10 +123,10 @@
     document.getElementById(`sovCloseBtn-${toolId}`).addEventListener('click', closeModal);
     document.getElementById(`sovActionBtn-${toolId}`).addEventListener('click', closeModal);
 
-    // Auto-launch if not seen
-    if (!localStorage.getItem(`sov_tutorial_seen_${toolId}`)) {
-      setTimeout(openModal, 600);
-    }
+    // Available on-demand via Help/Tutorial button, never blocking the initial workstation view
+    // if (!localStorage.getItem(`sov_tutorial_seen_${toolId}`)) {
+    //   setTimeout(openModal, 600);
+    // }
 
     return {
       open: openModal,

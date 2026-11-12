@@ -25,6 +25,7 @@ Core capabilities:
 
 ```text
 cyber-turtle-studio/
+├── server.py                              # Sovereign server launcher (127.0.0.1:8129)
 ├── bin/cyber-turtle.js                    # Unified Node/ZothOS CLI & desktop launcher
 ├── src/cyber_turtle_studio/
 │   ├── turtle_engine.py                   # Logo lexer, recursive procedure parser & TurtleEngine
